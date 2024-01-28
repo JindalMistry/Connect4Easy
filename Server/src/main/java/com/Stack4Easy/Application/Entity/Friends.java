@@ -22,8 +22,18 @@ public class Friends {
     private Long total_games;
     private Long wins;
     private Boolean active;
+    private Boolean IsRequestAccepted;
 
-    public Friends(Integer user_id, Integer ref_id, String username, String referencename, Long total_games, Long wins, Boolean active) {
+    public Friends(
+            Integer user_id,
+            Integer ref_id,
+            String username,
+            String referencename,
+            Long total_games,
+            Long wins,
+            Boolean active,
+            Boolean IsRequestAccepted
+    ) {
         this.user_id = user_id;
         this.ref_id = ref_id;
         this.username = username;
@@ -31,5 +41,6 @@ public class Friends {
         this.total_games = total_games;
         this.wins = wins;
         this.active = active;
+        this.IsRequestAccepted = IsRequestAccepted;
     }
 }

@@ -1,5 +1,6 @@
 package com.Stack4Easy.Registration.Service;
 
+import com.Stack4Easy.Application.DTO.FriendSearch;
 import com.Stack4Easy.Application.Entity.Friends;
 import com.Stack4Easy.Application.Repository.FriendRepository;
 import com.Stack4Easy.Registration.DTO.UserDto;
@@ -18,10 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.management.relation.RoleNotFoundException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -86,5 +84,13 @@ public class UserService implements UserDetailsService {
             user.setStatus(UserStatus.OFFLINE);
         }
         throw new UsernameNotFoundException("User with this username does not exists!");
+    }
+
+    public List<FriendSearch> getUserBySearch(String searchString) {
+        List<FriendSearch> list = new ArrayList<>();
+        userRepository.findByUsernameContainingIgnoreCase(searchString).forEach((item) -> {
+            list.add(FriendSearch.builder().user_id(item.getUser_id()).username(item.getUsername()).build());
+        });
+        return list;
     }
 }

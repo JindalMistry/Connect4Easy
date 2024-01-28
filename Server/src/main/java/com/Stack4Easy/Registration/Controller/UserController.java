@@ -37,12 +37,9 @@ public class UserController {
                     user.getReferencename(),
                     "/queue/friends",
                     FriendNotification.builder()
-                            .user_id(user.getRef_id())
-                            .ref_id(user.getUser_id())
-                            .username(user.getReferencename())
-                            .referencename(user.getUsername())
-                            .type("STATUS_ONLINE")
-                            .active(true)
+                            .user_id(user.getUser_id())
+                            .username(user.getUsername())
+
                             .build()
             );
         });

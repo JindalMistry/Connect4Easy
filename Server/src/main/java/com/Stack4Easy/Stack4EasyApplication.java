@@ -61,7 +61,8 @@ public class Stack4EasyApplication {
 							ritesh.getUsername(),
 							0L,
 							0L,
-							false
+							false,
+							true
 							)
 			);
 			friendRepository.save(
@@ -72,7 +73,8 @@ public class Stack4EasyApplication {
 							jindal.getUsername(),
 							0L,
 							0L,
-							false
+							false,
+							true
 					)
 			);
 			friendRepository.save(
@@ -83,7 +85,8 @@ public class Stack4EasyApplication {
 							yash.getUsername(),
 							0L,
 							0L,
-							false
+							false,
+							true
 					)
 			);
 			friendRepository.save(
@@ -94,7 +97,8 @@ public class Stack4EasyApplication {
 							jindal.getUsername(),
 							0L,
 							0L,
-							false
+							false,
+							true
 					)
 			);
 			friendRepository.save(
@@ -105,7 +109,8 @@ public class Stack4EasyApplication {
 							yash.getUsername(),
 							0L,
 							0L,
-							false
+							false,
+							true
 					)
 			);
 			friendRepository.save(
@@ -116,7 +121,8 @@ public class Stack4EasyApplication {
 							ritesh.getUsername(),
 							0L,
 							0L,
-							false
+							false,
+							true
 					)
 			);
 			friendRepository.save(
@@ -127,7 +133,8 @@ public class Stack4EasyApplication {
 							meet.getUsername(),
 							0L,
 							0L,
-							false
+							false,
+							true
 					)
 			);
 			friendRepository.save(
@@ -138,7 +145,8 @@ public class Stack4EasyApplication {
 							yash.getUsername(),
 							0L,
 							0L,
-							false
+							false,
+							true
 					)
 			);
 		};
