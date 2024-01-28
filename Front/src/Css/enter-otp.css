@@ -1,0 +1,55 @@
+.enter-otp-container {
+    height: 250px;
+    width: 500px;
+    border: 2px solid black;
+    border-radius: 20px;
+    background-color: #f5f5f5;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.otp-label{
+    font-size: 2em;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+    padding: 8% 0%;
+}
+.otp-box-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0% 5%;
+}
+.otp-box{
+    height: 50px;
+    width: 50px;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+.otp-textbox{
+    height: 100%;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 600px) {
+    .enter-otp-container {
+        height: 25%;
+        width: 95%;
+    }
+    .otp-box-container {
+        padding: 0px;
+    }
+    .otp-box{
+        height: 40px;
+        width: 40px;
+    }
+    .otp-textbox{
+        font-size: large;
+    }
+}

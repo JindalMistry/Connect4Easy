@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Works on Chrome, Edge, and Safari */
+/* *::-webkit-scrollbar {
+    background: none;
+    width: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+    height: 50px;
+    width: 50px;
+    background-color: black;
+    border-radius: 20px;
+    border: 5px solid var(--scroll-bar-bg-color);
+} */
+.App {
+    height: 100vh;
+    width: 100%;
+}
+.flex {
+    display: flex;
+}
+.flex-row {
+    flex-direction: row;
+}
+.flex-col {
+    flex-direction: column;
+}
+.align-c {
+    align-items: center;
+}
+.justify-c {
+    justify-content: center;
+}
