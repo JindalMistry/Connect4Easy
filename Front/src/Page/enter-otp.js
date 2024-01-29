@@ -8,43 +8,43 @@ export default function EnterOtp() {
   const otpRef = useRef();
 
   const onChangeText = (e) => {
-    if(e.target.value != ""){
+    if (e.target.value != "") {
       console.log(e.target.value, e.target.id);
-    let tempArr = JSON.parse(JSON.stringify(otp));
-    for(let i = 0; i < tempArr.length; i++) {
+      let tempArr = JSON.parse(JSON.stringify(otp));
+      for (let i = 0; i < tempArr.length; i++) {
         let index = i;
-        if(index == parseInt(e.target.id[0])){
-            console.log("Change");
-            if(e.target.value) {
-              tempArr[i] = e.target.value[e.target.value.length - 1];
+        if (index == parseInt(e.target.id[0])) {
+          console.log("Changed");
+          if (e.target.value) {
+            tempArr[i] = e.target.value[e.target.value.length - 1];
+          }
+          if (index !== otp.length) {
+            var element = document.getElementById(index + 1 + "-otp");
+            if (element) {
+              element.focus();
             }
-            if(index !== otp.length){
-                var element = document.getElementById(index + 1 + "-otp");
-                if(element){
-                    element.focus();
-                }
-                // if(el.children[e.target.id]){
-                //     el = el.children[e.target.id];
-                //     if(el.children[0]){
-                //         el = el.children[0];
-                //         if(el.children[0]){
-                //             el = el.children[0];
-                //             if(el){
-                //                 el.focus()
-                //             }
-                //         }
-                //     }
-                // }
-            }
-            if(index === otp.length - 1){
-                console.log("Otp entered : " , tempArr.join(""));
-            }
+            // if(el.children[e.target.id]){
+            //     el = el.children[e.target.id];
+            //     if(el.children[0]){
+            //         el = el.children[0];
+            //         if(el.children[0]){
+            //             el = el.children[0];
+            //             if(el){
+            //                 el.focus()
+            //             }
+            //         }
+            //     }
+            // }
+          }
+          if (index === otp.length - 1) {
+            console.log("Otp entered : ", tempArr.join(""));
+          }
         }
+      }
+      setOtp(tempArr);
+      e.preventDefault();
     }
-    setOtp(tempArr)
-    e.preventDefault();
-    }
-  }
+  };
 
   return (
     <div className="login-wrapper flex align-c justify-c">
