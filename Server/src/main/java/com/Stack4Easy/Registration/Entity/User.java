@@ -36,13 +36,13 @@ public class User implements UserDetails {
         this.password = password;
         this.roles = roles;
         this.enabled = true;
-        this.status = UserStatus.OFFLINE;
+        this.status = UserStatus.ONLINE;
     }
     public User(String username, String password){
         this.username = username;
         this.password = password;
         this.enabled = true;
-        this.status = UserStatus.OFFLINE;
+        this.status = UserStatus.ONLINE;
     }
 
     @Override

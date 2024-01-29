@@ -1,6 +1,5 @@
 package com.Stack4Easy.Registration.Repository;
 
-import com.Stack4Easy.Application.DTO.FriendSearch;
 import com.Stack4Easy.Registration.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -5,10 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AddFriendDto {
-    private Integer user_id;
+public class ConnSearch {
+    private int user_id;
     private String username;
-    private String refrencename;
-    private Integer ref_id;
-
 }

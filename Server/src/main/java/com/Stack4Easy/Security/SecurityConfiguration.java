@@ -9,6 +9,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -32,6 +33,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers((opt) -> {
+                    opt.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
+                })
                 .cors(cors -> {
                                 cors.configurationSource(source -> {
                                     CorsConfiguration config = new CorsConfiguration();
@@ -44,7 +48,7 @@ public class SecurityConfiguration {
                 })
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/auth/**", "/ws/**", "/ws").permitAll()
+                            .requestMatchers("/auth/**", "/ws/**", "/ws","/h2-console","/h2-console/**").permitAll()
                             .anyRequest()
                             .authenticated();
                 })

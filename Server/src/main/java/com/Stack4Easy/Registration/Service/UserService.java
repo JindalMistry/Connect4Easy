@@ -1,8 +1,8 @@
 package com.Stack4Easy.Registration.Service;
 
-import com.Stack4Easy.Application.DTO.FriendSearch;
-import com.Stack4Easy.Application.Entity.Friends;
-import com.Stack4Easy.Application.Repository.FriendRepository;
+import com.Stack4Easy.Application.DTO.ConnSearch;
+import com.Stack4Easy.Application.Entity.Connections;
+import com.Stack4Easy.Application.Repository.ConnRepository;
 import com.Stack4Easy.Registration.DTO.UserDto;
 import com.Stack4Easy.Registration.Entity.Role;
 import com.Stack4Easy.Registration.Entity.User;
@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.management.relation.RoleNotFoundException;
 import java.util.*;
 
 @Service
@@ -28,7 +27,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
-    private final FriendRepository friendRepository;
+    private final ConnRepository connRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
@@ -64,7 +63,7 @@ public class UserService implements UserDetailsService {
             if(user.getPassword().matches(userDto.getPassword())){
                 user.setStatus(UserStatus.ONLINE);
                 //userRepository.save(user);
-                List<Friends> friends = friendRepository.findAllByReferencename(userDto.getUsername());
+                List<Connections> friends = connRepository.findByRefname(userDto.getUsername());
                 friends.forEach((item) -> {
                     item.setActive(true);
                 });
@@ -86,10 +85,10 @@ public class UserService implements UserDetailsService {
         throw new UsernameNotFoundException("User with this username does not exists!");
     }
 
-    public List<FriendSearch> getUserBySearch(String searchString) {
-        List<FriendSearch> list = new ArrayList<>();
+    public List<ConnSearch> getUserBySearch(String searchString) {
+        List<ConnSearch> list = new ArrayList<>();
         userRepository.findByUsernameContainingIgnoreCase(searchString).forEach((item) -> {
-            list.add(FriendSearch.builder().user_id(item.getUser_id()).username(item.getUsername()).build());
+            list.add(ConnSearch.builder().user_id(item.getUser_id()).username(item.getUsername()).build());
         });
         return list;
     }

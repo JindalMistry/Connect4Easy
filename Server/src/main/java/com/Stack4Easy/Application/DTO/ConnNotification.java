@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class FriendNotification {
+public class ConnNotification {
     public Integer user_id;
     public String username;
     public String type;

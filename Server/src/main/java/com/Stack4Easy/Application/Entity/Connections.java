@@ -4,31 +4,30 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Table
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Friends {
+public class Connections {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long connection_id;
     private Integer user_id;
     private Integer ref_id;
     private String username;
-    private String referencename;
+    private String refname;
     private Long total_games;
     private Long wins;
     private Boolean active;
-    private Boolean IsRequestAccepted;
+    private Boolean isRequestAccepted;
 
-    public Friends(
+    public Connections(
             Integer user_id,
             Integer ref_id,
             String username,
-            String referencename,
+            String reference_name,
             Long total_games,
             Long wins,
             Boolean active,
@@ -37,10 +36,10 @@ public class Friends {
         this.user_id = user_id;
         this.ref_id = ref_id;
         this.username = username;
-        this.referencename = referencename;
+        this.refname = reference_name;
         this.total_games = total_games;
         this.wins = wins;
         this.active = active;
-        this.IsRequestAccepted = IsRequestAccepted;
+        this.isRequestAccepted = IsRequestAccepted;
     }
 }

@@ -1,7 +1,7 @@
 package com.Stack4Easy;
 
-import com.Stack4Easy.Application.Entity.Friends;
-import com.Stack4Easy.Application.Repository.FriendRepository;
+import com.Stack4Easy.Application.Entity.Connections;
+import com.Stack4Easy.Application.Repository.ConnRepository;
 import com.Stack4Easy.Registration.Entity.Role;
 import com.Stack4Easy.Registration.Entity.User;
 import com.Stack4Easy.Registration.Repository.RoleRepository;
@@ -10,9 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @SpringBootApplication
 public class Stack4EasyApplication {
@@ -24,7 +21,7 @@ public class Stack4EasyApplication {
 	CommandLineRunner run(
 			RoleRepository roleRepository,
 			UserRepository userRepository,
-			FriendRepository friendRepository
+			ConnRepository connRepository
 			) {
 		return args -> {
 			roleRepository.save(new Role("USER"));
@@ -49,12 +46,32 @@ public class Stack4EasyApplication {
 					"Harsh",
 					"Harsh@123"
 			));
+			userRepository.save(new User(
+					"Dhrumil",
+					"Dhrumil@123"
+			));
+			userRepository.save(new User(
+					"Savan",
+					"Savan@123"
+			));
+			userRepository.save(new User(
+					"Naman",
+					"Naman@123"
+			));
+			userRepository.save(new User(
+					"Dixit",
+					"Dixit@123"
+			));
+			userRepository.save(new User(
+					"Mihir",
+					"Mihir@123"
+			));
 			User jindal = userRepository.findByUsername("Jindal").orElseThrow();
 			User ritesh = userRepository.findByUsername("Ritesh").orElseThrow();
 			User yash = userRepository.findByUsername("Yash").orElseThrow();
 			User meet = userRepository.findByUsername("Meet").orElseThrow();
-			friendRepository.save(
-					new Friends(
+			connRepository.save(
+					new Connections(
 							jindal.getUser_id(),
 							ritesh.getUser_id(),
 							jindal.getUsername(),
@@ -65,8 +82,8 @@ public class Stack4EasyApplication {
 							true
 							)
 			);
-			friendRepository.save(
-					new Friends(
+			connRepository.save(
+					new Connections(
 							ritesh.getUser_id(),
 							jindal.getUser_id(),
 							ritesh.getUsername(),
@@ -77,8 +94,8 @@ public class Stack4EasyApplication {
 							true
 					)
 			);
-			friendRepository.save(
-					new Friends(
+			connRepository.save(
+					new Connections(
 							jindal.getUser_id(),
 							yash.getUser_id(),
 							jindal.getUsername(),
@@ -89,8 +106,8 @@ public class Stack4EasyApplication {
 							true
 					)
 			);
-			friendRepository.save(
-					new Friends(
+			connRepository.save(
+					new Connections(
 							yash.getUser_id(),
 							jindal.getUser_id(),
 							yash.getUsername(),
@@ -101,8 +118,8 @@ public class Stack4EasyApplication {
 							true
 					)
 			);
-			friendRepository.save(
-					new Friends(
+			connRepository.save(
+					new Connections(
 							ritesh.getUser_id(),
 							yash.getUser_id(),
 							ritesh.getUsername(),
@@ -113,8 +130,8 @@ public class Stack4EasyApplication {
 							true
 					)
 			);
-			friendRepository.save(
-					new Friends(
+			connRepository.save(
+					new Connections(
 							yash.getUser_id(),
 							ritesh.getUser_id(),
 							yash.getUsername(),
@@ -125,8 +142,8 @@ public class Stack4EasyApplication {
 							true
 					)
 			);
-			friendRepository.save(
-					new Friends(
+			connRepository.save(
+					new Connections(
 							yash.getUser_id(),
 							meet.getUser_id(),
 							yash.getUsername(),
@@ -137,8 +154,8 @@ public class Stack4EasyApplication {
 							true
 					)
 			);
-			friendRepository.save(
-					new Friends(
+			connRepository.save(
+					new Connections(
 							meet.getUser_id(),
 							yash.getUser_id(),
 							meet.getUsername(),

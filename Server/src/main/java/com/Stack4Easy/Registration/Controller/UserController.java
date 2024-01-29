@@ -1,9 +1,8 @@
 package com.Stack4Easy.Registration.Controller;
-import com.Stack4Easy.Application.DTO.FriendNotification;
-import com.Stack4Easy.Application.Entity.Friends;
-import com.Stack4Easy.Application.Service.FriendService;
+import com.Stack4Easy.Application.DTO.ConnNotification;
+import com.Stack4Easy.Application.Entity.Connections;
+import com.Stack4Easy.Application.Service.ConnectionService;
 import com.Stack4Easy.Registration.DTO.UserDto;
-import com.Stack4Easy.Registration.Entity.User;
 import com.Stack4Easy.Registration.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final FriendService friendService;
+    private final ConnectionService connectionService;
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserDto userDto){
         String response = userService.register(userDto);
@@ -30,13 +29,13 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDto userDto){
         String response = userService.login(userDto);
-        List<Friends> friendsList =  friendService.getOnlineFriends(userDto.getUsername());
+        List<Connections> connectionsList =  connectionService.getOnlineFriends(userDto.getUsername());
 
-        friendsList.forEach(user -> {
+        connectionsList.forEach(user -> {
             messagingTemplate.convertAndSendToUser(
-                    user.getReferencename(),
+                    user.getRefname(),
                     "/queue/friends",
-                    FriendNotification.builder()
+                    ConnNotification.builder()
                             .user_id(user.getUser_id())
                             .username(user.getUsername())
 
