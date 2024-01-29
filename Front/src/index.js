@@ -5,27 +5,31 @@ import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import EnterOtp from './Page/enter-otp';
 import Home from './Page/Home';
+import { Provider } from 'react-redux';
+import store from './Store/store';
 
 const router = createBrowserRouter([
   {
-    path : "/",
-    element : <App/>
+    path: "/",
+    element: <App />
   },
   {
-    path : "/otp",
-    element : <EnterOtp/>
+    path: "/otp",
+    element: <EnterOtp />
   },
   {
-    path : "/home",
-    element : <Home/>
+    path: "/home",
+    element: <Home />
   }
-])
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.Fragment>
-    <RouterProvider router={router}/>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.Fragment>
 );
 

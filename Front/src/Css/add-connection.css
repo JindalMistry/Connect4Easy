@@ -1,0 +1,71 @@
+.add-conn-wrapper {
+    height: 100%;
+    width: 100%;
+}
+.header-add-conn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2% 2%;
+}
+
+.conn-search-input {
+    width: 80%;
+}
+.conn-search-text {
+    border: none;
+    border-bottom: 2px solid black;
+    font-size: 1em;
+    padding: 1% 0%;
+}
+.conn-search-text::placeholder {
+    color: grey;
+    font-size: 0.9em;
+    font-style: italic;
+    font-weight: normal;
+}
+.conn-search-btn {
+    padding: 0.5em 3em;
+    color: white;
+    background: #228422;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+.conn-list {
+    height: 80%;
+    width: 100%;
+    padding: 0px 2%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.conn-list ul {
+    list-style: none;
+}
+.conn-list ul li {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1% 0%;
+    border-bottom: 1px solid rgba(120, 120, 120, 0.5);
+}
+.conn-list-btn {
+    padding: 0.5em 2em;
+    color: white;
+    background: #228422;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 600px) {
+    .header-add-conn {
+        justify-content: space-between;
+        padding: 3% 2%;
+    }
+    .conn-search-input {
+        width: 80%;
+    }
+}
