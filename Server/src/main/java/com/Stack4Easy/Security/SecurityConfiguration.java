@@ -50,7 +50,8 @@ public class SecurityConfiguration {
                     auth
                             .requestMatchers("/auth/**", "/ws/**", "/ws","/h2-console","/h2-console/**").permitAll()
                             .anyRequest()
-                            .authenticated();
+                            .permitAll();
+//                            .authenticated();
                 })
                 .sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

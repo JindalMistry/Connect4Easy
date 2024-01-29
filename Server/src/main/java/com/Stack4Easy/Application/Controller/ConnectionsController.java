@@ -24,9 +24,12 @@ public class ConnectionsController {
         return connectionService.getFriends(username);
     }
 
-    @GetMapping("/friends/search/{str}")
-    public List<ConnSearch> searchUser(@PathVariable String str){
-        return userService.getUserBySearch(str);
+    @GetMapping("/friends/search/{str}/{user_id}")
+    public List<ConnSearch> searchUser(
+            @PathVariable String str,
+            @PathVariable Integer user_id
+    ){
+        return userService.getUserBySearch(str, user_id);
     }
 
     @PostMapping("/friends/addConnection")

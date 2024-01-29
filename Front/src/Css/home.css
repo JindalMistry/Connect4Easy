@@ -20,15 +20,21 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    height: min-content;
+    justify-content: space-between;
     height: 10%;
     z-index: 2;
+}
+.friend-request-icon{
+    font-size: 2em;
+    cursor: pointer;
+}
+.color-green{
+    color: green;
 }
 .add-friend {
     padding: 1em 3em;
     color: white;
-    background: #228422;
+    background: #4cc75e;
     border-radius: 10px;
     border: none;
     cursor: pointer;
@@ -72,7 +78,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     padding: 10% 0px;
 }
 .friend-status {
@@ -85,7 +91,7 @@
     background-color: red;
 }
 .green {
-    background-color: green;
+    background: #4cc75e;
 }
 .friend-logo {
     height: 2.5em;
@@ -97,6 +103,39 @@
     justify-content: center;
     font-size: 2em;
 }
+.connection-req-sidebar {
+    position: absolute;
+    top: 0;
+    width: 400px;
+    height: 100%;
+    z-index: 3;
+    padding: 1%;
+    background-color: white;
+    transition: left 0.5s;
+}
+.close {
+    left: -100%;
+}
+.open {
+    left: 0;
+}
+.connection-req-header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 5%;
+}
+.connection-req-header p { font-size: 1.5em;}
+.connection-req-header span {font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer;}
+.connection-req-body { height: 84%;  overflow: hidden; overflow-y: auto;}
+.connection-sidebar-seperator { height: 3%;}
+.connection-req-body ul {list-style: none;}
+.connection-req-body li { text-wrap: wrap; padding: 1em 0px; border-bottom: 1px solid black;}
+.connection-req-body li div {display: flex; padding: 1em 0px 0px 0px;}
+.connection-req-btns { padding: 0.5em 0px; border: none; border-radius: 10px; cursor: pointer; margin: 0px 1%; color: white;}
+.connection-req-footer {height: 5%;}
+.log-out-btn { display: flex; align-items: center; justify-content: center;  color: white; font-size: 1em; background-color: #4cc75e; border: none; border-radius: 10px; cursor: pointer;}
 
 @media only screen and (max-width: 600px) {
     .home-header {
@@ -107,9 +146,24 @@
     }
     .add-friend-button {
         height: 8%;
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+    }
+    .add-friend {
+        padding: 1em 2em;
+    }
+    .friend-request-icon{
+        margin-left: 0.5em;
     }
     .home-body {
         height: 8%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .home-body-btn{
+        padding: 0.4em 2em;
     }
     .home-main {
         height: 86%;
@@ -117,15 +171,16 @@
     .main-btn-container {
         height: 60%;
     }
-}
-@media only screen and (max-width: 600px) {
     .home-main {
         display: grid;
         grid-template-columns: repeat(auto-fit, 100px);
-        grid-template-rows: repeat(auto-fit, 130px);
-        grid-auto-rows: 130px;
+        grid-template-rows: repeat(auto-fit, 150px);
+        grid-auto-rows: 150px;
         grid-gap: 30px;
         overflow: hidden;
         overflow-y: auto;
+    }
+    .connection-req-sidebar{
+        width: 100%;
     }
 }

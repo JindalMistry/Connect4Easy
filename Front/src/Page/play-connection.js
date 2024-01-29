@@ -17,6 +17,29 @@ export default function PlayConnection({ referesh }) {
         });
     };
 
+    useEffect(() => {        
+        if(User.socketResponse !== null){
+            let obj = JSON.parse(User.socketResponse);
+            console.log("Socket response",obj);
+            if(obj.type === "STATUS"){
+                let temp = JSON.parse(JSON.stringify(connections));
+                for(let i = 0; i < temp.length; i++){
+                    if(temp[i].ref_id == obj.user_id){
+                        if(obj.value == "ONLINE"){
+                            temp[i].active = true;
+                        }
+                        else if(obj.value == "OFFLINE"){
+                            temp[i].active = false;
+                        }
+                        break;
+                    }
+                }
+                console.log("Temp change : ", temp);
+                setConnections(temp);
+            }
+        }
+    },[User.socketResponse])
+
     useEffect(() => {
         loadConnections();
     }, []);

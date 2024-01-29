@@ -10,6 +10,8 @@ import com.Stack4Easy.Registration.Entity.UserStatus;
 import com.Stack4Easy.Registration.Repository.RoleRepository;
 import com.Stack4Easy.Registration.Repository.UserRepository;
 import com.Stack4Easy.Security.JwtService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ public class UserService implements UserDetailsService {
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
     private final ConnRepository connRepository;
+    private final EntityManager entityManager;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
@@ -85,10 +88,20 @@ public class UserService implements UserDetailsService {
         throw new UsernameNotFoundException("User with this username does not exists!");
     }
 
-    public List<ConnSearch> getUserBySearch(String searchString) {
+    public List<ConnSearch> getUserBySearch(String searchString, Integer user_id) {
         List<ConnSearch> list = new ArrayList<>();
-        userRepository.findByUsernameContainingIgnoreCase(searchString).forEach((item) -> {
-            list.add(ConnSearch.builder().user_id(item.getUser_id()).username(item.getUsername()).build());
+        String query =
+                "select user_id, username from User where username ILIKE '%" + searchString + "%'" +
+                        " and user_id not in (" + user_id + ")";
+        Query result = entityManager.createQuery(query);
+        List<Object[]> arr = result.getResultList();
+        arr.forEach((item) -> {
+            list.add(
+                    ConnSearch.builder()
+                            .user_id((int)item[0])
+                            .username((String)item[1])
+                            .build()
+            );
         });
         return list;
     }

@@ -38,7 +38,8 @@ public class UserController {
                     ConnNotification.builder()
                             .user_id(user.getUser_id())
                             .username(user.getUsername())
-
+                            .type("STATUS")
+                            .value("ONLINE")
                             .build()
             );
         });
