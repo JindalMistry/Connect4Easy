@@ -1,9 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
-const SOCKET_URL = "ws://localhost:8080/ws";
-const SOCKJS_URL = "http://localhost:8080/ws";
-var stompClient = null;
 
 const initialState = {
     token: "",

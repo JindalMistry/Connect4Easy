@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -16,12 +17,15 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@Slf4j
 public class JwtService {
     private static String SECRET_KEY = "";
 
     public void createSecretKey(){
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        SECRET_KEY = Encoders.BASE64.encode(key.getEncoded());
+        if(SECRET_KEY.isEmpty()) {
+            Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+            SECRET_KEY = Encoders.BASE64.encode(key.getEncoded());
+        }
     }
 
     public String extractUserMain(String token){
@@ -38,7 +42,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24)))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

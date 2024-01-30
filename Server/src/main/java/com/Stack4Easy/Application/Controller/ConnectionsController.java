@@ -2,7 +2,9 @@ package com.Stack4Easy.Application.Controller;
 
 import com.Stack4Easy.Application.DTO.AddConnDto;
 import com.Stack4Easy.Application.DTO.ConnSearch;
+import com.Stack4Easy.Application.DTO.UserNotificationDto;
 import com.Stack4Easy.Application.Entity.Connections;
+import com.Stack4Easy.Application.Entity.UserNotification;
 import com.Stack4Easy.Application.Service.ConnectionService;
 import com.Stack4Easy.Registration.Service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,17 +35,12 @@ public class ConnectionsController {
     }
 
     @PostMapping("/friends/addConnection")
-    public ResponseEntity<String> addFriend(@RequestBody AddConnDto addConnDto){
-        connectionService.addFriend(addConnDto);
-        return ResponseEntity.ok("SENT");
+    public ResponseEntity<UserNotification> addFriend(@RequestBody AddConnDto addConnDto){
+        return ResponseEntity.ok(connectionService.addFriend(addConnDto));
     }
 
-    @PostMapping("/friends/acceptConnection")
-    public ResponseEntity<String> acceptConnection(@RequestBody AddConnDto addConnDto) {
-        String message = connectionService.acceptConnection(addConnDto);
-        if(message.matches("SUCCESS")){
-            return ResponseEntity.ok("SUCCESS");
-        }
-        else return ResponseEntity.ok("ERROR");
+    @PostMapping("/friends/acceptConnection/{type}")
+    public ResponseEntity<String> acceptConnection(@RequestBody AddConnDto addConnDto, @PathVariable String type) {
+        return ResponseEntity.ok(connectionService.acceptConnection(addConnDto, type));
     }
 }

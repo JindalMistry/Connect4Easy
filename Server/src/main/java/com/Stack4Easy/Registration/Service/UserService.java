@@ -59,19 +59,22 @@ public class UserService implements UserDetailsService {
         return "User registered successfully";
     }
     @Transactional
-    public String login(UserDto userDto) {
+    public UserDto login(UserDto userDto) {
         Optional<User> dbUser = userRepository.findByUsername(userDto.getUsername());
         if(dbUser.isPresent()){
             User user = dbUser.get();
             if(user.getPassword().matches(userDto.getPassword())){
                 user.setStatus(UserStatus.ONLINE);
-                //userRepository.save(user);
                 List<Connections> friends = connRepository.findByRefname(userDto.getUsername());
                 friends.forEach((item) -> {
                     item.setActive(true);
                 });
-                //friendRepository.saveAll(friends);
-                return jwtService.generateToken(user);
+                return new UserDto(
+                        user.getUser_id(),
+                        user.getUsername(),
+                        "",
+                        jwtService.generateToken(user)
+                );
             }
             throw new IllegalStateException("Password does not match!");
         }

@@ -13,4 +13,5 @@ public interface ConnRepository extends JpaRepository<Connections, Long> {
     List<Connections> findByUsernameAndActiveAndIsRequestAccepted(String username, Boolean active, Boolean IsRequestAccepted);
     List<Connections> findByUsernameAndIsRequestAccepted(String username, Boolean IsRequestAccepted);
     List<Connections> findByRefname(String reference_name);
+    void deleteByUsername(String username);
 }

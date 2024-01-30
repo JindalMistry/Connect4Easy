@@ -1,7 +1,7 @@
 import React from 'react';
 import '../Css/component.css';
 
-export default function Button({ label, onClick, className }) {
+export default function Button({ label, onClick, className, id }) {
     return (
         <button
             className={"custom-btn " + className}
@@ -15,5 +15,6 @@ export default function Button({ label, onClick, className }) {
 Button.defaultProps = {
     className: "",
     label: "",
-    onClick: () => { console.log("button clicked!"); }
+    onClick: () => { console.log("button clicked!"); },
+    id: ""
 };

@@ -66,106 +66,106 @@ public class Stack4EasyApplication {
 					"Mihir",
 					"Mihir@123"
 			));
-			User jindal = userRepository.findByUsername("Jindal").orElseThrow();
-			User ritesh = userRepository.findByUsername("Ritesh").orElseThrow();
-			User yash = userRepository.findByUsername("Yash").orElseThrow();
-			User meet = userRepository.findByUsername("Meet").orElseThrow();
-			connRepository.save(
-					new Connections(
-							jindal.getUser_id(),
-							ritesh.getUser_id(),
-							jindal.getUsername(),
-							ritesh.getUsername(),
-							0L,
-							0L,
-							false,
-							true
-							)
-			);
-			connRepository.save(
-					new Connections(
-							ritesh.getUser_id(),
-							jindal.getUser_id(),
-							ritesh.getUsername(),
-							jindal.getUsername(),
-							0L,
-							0L,
-							false,
-							true
-					)
-			);
-			connRepository.save(
-					new Connections(
-							jindal.getUser_id(),
-							yash.getUser_id(),
-							jindal.getUsername(),
-							yash.getUsername(),
-							0L,
-							0L,
-							false,
-							true
-					)
-			);
-			connRepository.save(
-					new Connections(
-							yash.getUser_id(),
-							jindal.getUser_id(),
-							yash.getUsername(),
-							jindal.getUsername(),
-							0L,
-							0L,
-							false,
-							true
-					)
-			);
-			connRepository.save(
-					new Connections(
-							ritesh.getUser_id(),
-							yash.getUser_id(),
-							ritesh.getUsername(),
-							yash.getUsername(),
-							0L,
-							0L,
-							false,
-							true
-					)
-			);
-			connRepository.save(
-					new Connections(
-							yash.getUser_id(),
-							ritesh.getUser_id(),
-							yash.getUsername(),
-							ritesh.getUsername(),
-							0L,
-							0L,
-							false,
-							true
-					)
-			);
-			connRepository.save(
-					new Connections(
-							yash.getUser_id(),
-							meet.getUser_id(),
-							yash.getUsername(),
-							meet.getUsername(),
-							0L,
-							0L,
-							false,
-							true
-					)
-			);
-			connRepository.save(
-					new Connections(
-							meet.getUser_id(),
-							yash.getUser_id(),
-							meet.getUsername(),
-							yash.getUsername(),
-							0L,
-							0L,
-							false,
-							true
-					)
-			);
+//			User jindal = userRepository.findByUsername("Jindal").orElseThrow();
+//			User ritesh = userRepository.findByUsername("Ritesh").orElseThrow();
+//			User yash = userRepository.findByUsername("Yash").orElseThrow();
+//			User meet = userRepository.findByUsername("Meet").orElseThrow();
+//			connRepository.save(
+//					new Connections(
+//							jindal.getUser_id(),
+//							ritesh.getUser_id(),
+//							jindal.getUsername(),
+//							ritesh.getUsername(),
+//							0L,
+//							0L,
+//							false,
+//							true
+//							)
+//			);
+//			connRepository.save(
+//					new Connections(
+//							ritesh.getUser_id(),
+//							jindal.getUser_id(),
+//							ritesh.getUsername(),
+//							jindal.getUsername(),
+//							0L,
+//							0L,
+//							false,
+//							true
+//					)
+//			);
+//			connRepository.save(
+//					new Connections(
+//							jindal.getUser_id(),
+//							yash.getUser_id(),
+//							jindal.getUsername(),
+//							yash.getUsername(),
+//							0L,
+//							0L,
+//							false,
+//							true
+//					)
+//			);
+//			connRepository.save(
+//					new Connections(
+//							yash.getUser_id(),
+//							jindal.getUser_id(),
+//							yash.getUsername(),
+//							jindal.getUsername(),
+//							0L,
+//							0L,
+//							false,
+//							true
+//					)
+//			);
+//			connRepository.save(
+//					new Connections(
+//							ritesh.getUser_id(),
+//							yash.getUser_id(),
+//							ritesh.getUsername(),
+//							yash.getUsername(),
+//							0L,
+//							0L,
+//							false,
+//							true
+//					)
+//			);
+//			connRepository.save(
+//					new Connections(
+//							yash.getUser_id(),
+//							ritesh.getUser_id(),
+//							yash.getUsername(),
+//							ritesh.getUsername(),
+//							0L,
+//							0L,
+//							false,
+//							true
+//					)
+//			);
+//			connRepository.save(
+//					new Connections(
+//							yash.getUser_id(),
+//							meet.getUser_id(),
+//							yash.getUsername(),
+//							meet.getUsername(),
+//							0L,
+//							0L,
+//							false,
+//							true
+//					)
+//			);
+//			connRepository.save(
+//					new Connections(
+//							meet.getUser_id(),
+//							yash.getUser_id(),
+//							meet.getUsername(),
+//							yash.getUsername(),
+//							0L,
+//							0L,
+//							false,
+//							true
+//					)
+//			);
 		};
 	}
 }

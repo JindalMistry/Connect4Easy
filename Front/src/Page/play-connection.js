@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { UserInfo } from '../Store/authSlice';
 import { getConnections } from '../Services/conn-service';
 
-export default function PlayConnection({ referesh }) {
+export default function PlayConnection({ referesh, setRefreresh }) {
     const User = useSelector(UserInfo);
     const dispatch = useDispatch();
     const [connections, setConnections] = useState([]);
@@ -17,18 +17,25 @@ export default function PlayConnection({ referesh }) {
         });
     };
 
-    useEffect(() => {        
-        if(User.socketResponse !== null){
+    useEffect(() => {
+        if (referesh === true) {
+            loadConnections();
+            setRefreresh();
+        }
+    }, [referesh]);
+
+    useEffect(() => {
+        if (User.socketResponse !== null) {
             let obj = JSON.parse(User.socketResponse);
-            console.log("Socket response",obj);
-            if(obj.type === "STATUS"){
+            console.log("Socket response", obj);
+            if (obj.type === "STATUS") {
                 let temp = JSON.parse(JSON.stringify(connections));
-                for(let i = 0; i < temp.length; i++){
-                    if(temp[i].ref_id == obj.user_id){
-                        if(obj.value == "ONLINE"){
+                for (let i = 0; i < temp.length; i++) {
+                    if (temp[i].ref_id == obj.user_id) {
+                        if (obj.value == "ONLINE") {
                             temp[i].active = true;
                         }
-                        else if(obj.value == "OFFLINE"){
+                        else if (obj.value == "OFFLINE") {
                             temp[i].active = false;
                         }
                         break;
@@ -38,7 +45,7 @@ export default function PlayConnection({ referesh }) {
                 setConnections(temp);
             }
         }
-    },[User.socketResponse])
+    }, [User.socketResponse]);
 
     useEffect(() => {
         loadConnections();

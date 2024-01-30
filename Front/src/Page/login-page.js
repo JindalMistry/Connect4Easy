@@ -47,14 +47,15 @@ export default function Login() {
             login(obj).then(d => {
                 if (d.status === 200) {
                     console.log("D.data : ", d.data);
-                    dispatch(setUser({ user_id: "", username: username, token: d.data }));
+                    dispatch(setUser({ user_id: d.data.user_id, username: username, token: d.data.token }));
                     navigate(
                         "/home",
                         { state: { username: username } }
                     );
                     axios.interceptors.request.use(function (config) {
-                        const token = d.data;
+                        const token = d.data.token;
                         config.baseURL = 'http://localhost:8080/';
+                        // config.baseURL = 'http://192.168.100.43:8080/';
                         config.headers.Authorization = `Bearer ${token}`;
                         return config;
                     });

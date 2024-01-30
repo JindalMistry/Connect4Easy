@@ -27,8 +27,8 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDto userDto){
-        String response = userService.login(userDto);
+    public ResponseEntity<UserDto> login(@RequestBody UserDto userDto){
+        UserDto response = userService.login(userDto);
         List<Connections> connectionsList =  connectionService.getOnlineFriends(userDto.getUsername());
 
         connectionsList.forEach(user -> {
