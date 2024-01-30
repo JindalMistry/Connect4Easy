@@ -96,9 +96,9 @@ export default function Login() {
                 {
                     status == "login"
                         ?
-                        <p className='login-footer'>Are you a new user? <b onClick={changeStatus}><u>Sign Up!</u></b></p>
+                        <p className='login-footer'>Are you a new user? <b onClick={changeStatus}>Sign Up!</b></p>
                         :
-                        <p className='login-footer'>Already have an account? <b onClick={changeStatus}><u>Sign in!</u></b></p>
+                        <p className='login-footer'>Already have an account? <b onClick={changeStatus}>Sign in!</b></p>
                 }
             </div>
         </div>
