@@ -127,10 +127,11 @@ export default function Home(props) {
       reference_name: item.refname,
     };
     acceptConnection(obj, type)
-      .then((res) => {
-        if (res.status === 200) {
+      .then((response) => {
+        let res = response.data;
+        if (res.Status === 200) {
           if (type === "ACCEPT") {
-            alert(item.refname + " is now your friend!");
+            alert(res.Message);
             setRefConnList(true);
           }
           let notiObj = {
@@ -144,7 +145,8 @@ export default function Home(props) {
             refname: "",
           };
           pullNotification(notiObj).then((d) => {
-            if (d.status === 200) {
+            let response = d.data;
+            if (response.Status === 200) {
               dispatch(deleteNotification({ noti_id: item.notification_id }));
             }
           });

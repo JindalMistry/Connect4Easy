@@ -114,7 +114,7 @@ public class ConnectionService {
     }
 
     @Transactional
-    public String acceptConnection(AddConnDto addConnDto, String type) {
+    public ResponseModel acceptConnection(AddConnDto addConnDto, String type) {
         if(type.matches("DECLINE")){
             connRepository.deleteByUsername(addConnDto.getUsername());
             connRepository.deleteByUsername(addConnDto.getReference_name());
@@ -157,6 +157,9 @@ public class ConnectionService {
                         addConnDto.getUsername()
                 )
         );
-        return "SUCCESS";
+        return new ResponseModel(
+                String.format("You are now friends with %s", addConnDto.getUsername()),
+                200
+        );
     }
 }

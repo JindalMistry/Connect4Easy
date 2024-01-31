@@ -46,7 +46,7 @@ public class ConnectionsController {
     }
 
     @PostMapping("/friends/acceptConnection/{type}")
-    public ResponseEntity<String> acceptConnection(@RequestBody AddConnDto addConnDto, @PathVariable String type) {
+    public ResponseEntity<ResponseModel> acceptConnection(@RequestBody AddConnDto addConnDto, @PathVariable String type) {
         return ResponseEntity.ok(connectionService.acceptConnection(addConnDto, type));
     }
 

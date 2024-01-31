@@ -43,7 +43,7 @@ export default function AddConnection({ onClose, refereshNotification, show }) {
                 console.log("Res.data", response);
                 alert(response.Message);
                 if (response.Status === 200) {
-                    if (response.data.type === "MESSAGE") {
+                    if (response.Data.type === "MESSAGE") {
                         dispatch(insertNotification(res.data));
                     }
                 }
@@ -53,7 +53,6 @@ export default function AddConnection({ onClose, refereshNotification, show }) {
         }
         else { console.log("User not found!"); }
     };
-    useEffect(() => { console.log("Add connection modal loaded."); }, []);
 
     return (
         <Modal

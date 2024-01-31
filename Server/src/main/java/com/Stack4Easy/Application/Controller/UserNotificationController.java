@@ -1,5 +1,6 @@
 package com.Stack4Easy.Application.Controller;
 
+import com.Stack4Easy.Application.DTO.ResponseModel;
 import com.Stack4Easy.Application.DTO.UserNotificationDto;
 import com.Stack4Easy.Application.Entity.UserNotification;
 import com.Stack4Easy.Application.Service.UserNotificationService;
@@ -28,15 +29,8 @@ public class UserNotificationController {
     }
 
     @PostMapping("/user/pullNotification")
-    public ResponseEntity<String> pullNotification(@RequestBody UserNotificationDto notificationDto){
-        try{
-            userNotificationService.pullNotification(notificationDto);
-            return ResponseEntity.ok("DELETED");
-        }
-        catch(Exception ex){
-            log.info(ex.getMessage());
-            return ResponseEntity.ok("ERROR");
-        }
+    public ResponseEntity<ResponseModel> pullNotification(@RequestBody UserNotificationDto notificationDto){
+        return ResponseEntity.ok(userNotificationService.pullNotification(notificationDto));
     }
 
     @PostMapping("/user/updateNotification")
