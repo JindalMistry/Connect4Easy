@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { json, useLocation } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import Button from "../Component/Button";
@@ -63,6 +63,7 @@ export default function Home(props) {
                 dispatch(setSocketResponse({ res: e.body }));
               }
             },
+            {sessionId : location.state.username}
           );
           // stompClient.subscribe(
           //   "/topic/public",
@@ -70,7 +71,7 @@ export default function Home(props) {
 
           //   },
           // );
-          // stompClient.publish('/user/application.subscribeUser', {}, location.state.username);
+          // stompClient.publish('/app/chat.subUser', {}, JSON.stringify({user_id : location.state.user_id, username : location.state.username}));
         }
       };
       stompClient.onDisconnect = () => {
