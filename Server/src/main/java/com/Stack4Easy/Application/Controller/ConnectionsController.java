@@ -9,6 +9,8 @@ import com.Stack4Easy.Application.Entity.UserNotification;
 import com.Stack4Easy.Application.Service.ConnectionService;
 import com.Stack4Easy.Registration.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class ConnectionsController {
 
     private final ConnectionService connectionService;
@@ -37,7 +40,9 @@ public class ConnectionsController {
 
     @PostMapping("/friends/addConnection")
     public ResponseEntity<ResponseModel> addFriend(@RequestBody AddConnDto addConnDto){
-        return ResponseEntity.ok(connectionService.addFriend(addConnDto));
+        ResponseModel model = connectionService.addFriend(addConnDto);
+        log.info("Model here : {}", model);
+        return ResponseEntity.ok(model);
     }
 
     @PostMapping("/friends/acceptConnection/{type}")

@@ -40,9 +40,9 @@ export default function AddConnection({ onClose, refereshNotification, show }) {
             };
             addConnection(obj).then(res => {
                 let response = res.data;
+                console.log("Res.data", response);
                 alert(response.Message);
                 if (response.Status === 200) {
-                    console.log("Res.data", response.data);
                     if (response.data.type === "MESSAGE") {
                         dispatch(insertNotification(res.data));
                     }
