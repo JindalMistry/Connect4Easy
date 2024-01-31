@@ -6,13 +6,18 @@ import com.Stack4Easy.Registration.DTO.UserDto;
 import com.Stack4Easy.Registration.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpAttributesContextHolder;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping(path = "/auth")
@@ -43,6 +48,17 @@ public class UserController {
                             .build()
             );
         });
+
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/logout/{username}")
+    public ResponseEntity<String> logout(@PathVariable String username){
+        userService.logout(new UserDto(
+                0,
+                username,
+                "",
+                ""
+        ));
+        return ResponseEntity.ok("SUCCESS");
     }
 }

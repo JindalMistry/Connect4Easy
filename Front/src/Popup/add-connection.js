@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '../Component/Modal';
 import TextBox from '../Component/TextBox';
 import Button from '../Component/Button';
@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { UserInfo } from '../Store/authSlice';
 import { insertNotification } from '../Store/connectSlice';
 
-export default function AddConnection({ onClose, refereshNotification }) {
+export default function AddConnection({ onClose, refereshNotification, show }) {
 
     const User = useSelector(UserInfo);
     const dispatch = useDispatch();
@@ -39,17 +39,21 @@ export default function AddConnection({ onClose, refereshNotification }) {
                 reference_name: refUser.username,
             };
             addConnection(obj).then(res => {
-                if (res.status === 200) {
-                    console.log("Res.data", res.data);
-                    alert("Friend request has been sent.");
-                    if (res.data.type === "MESSAGE") {
+                let response = res.data;
+                alert(response.Message);
+                if (response.Status === 200) {
+                    console.log("Res.data", response.data);
+                    if (response.data.type === "MESSAGE") {
                         dispatch(insertNotification(res.data));
                     }
                 }
+            }).catch(ex => {
+                console.log("Res 50: ", ex);
             });
         }
         else { console.log("User not found!"); }
     };
+    useEffect(() => { console.log("Add connection modal loaded."); }, []);
 
     return (
         <Modal
@@ -60,6 +64,8 @@ export default function AddConnection({ onClose, refereshNotification }) {
                     onClose();
                 }
             }}
+            show={show}
+            className={"add-conn-modal"}
         >
             <div className='add-conn-wrapper'>
                 <div className='header-add-conn'>
@@ -73,7 +79,7 @@ export default function AddConnection({ onClose, refereshNotification }) {
                             id={"username"}
                         ></TextBox>
                     </div>
-                    <div>
+                    <div className='conn-button-wrapper'>
                         <Button
                             label={"Search"}
                             className={"conn-search-btn"}

@@ -50,7 +50,7 @@ export default function Login() {
                     dispatch(setUser({ user_id: d.data.user_id, username: username, token: d.data.token }));
                     navigate(
                         "/home",
-                        { state: { username: username } }
+                        { state: { username: username, user_id: d.data.user_id } }
                     );
                     axios.interceptors.request.use(function (config) {
                         const token = d.data.token;
@@ -59,6 +59,18 @@ export default function Login() {
                         config.headers.Authorization = `Bearer ${token}`;
                         return config;
                     });
+
+                }
+                else {
+                    console.log("D.data : ", d.data);
+                }
+            }).catch(ex => {
+                let res = ex.response;
+                if (res.status === 403) {
+                    alert('Please verify username or password.');
+                }
+                else if (res.status === 500) {
+                    alert(res.data.message);
                 }
             });
         }

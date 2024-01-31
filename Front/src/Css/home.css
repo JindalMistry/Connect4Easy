@@ -1,7 +1,7 @@
 .home-container {
     height: 100vh;
     width: 100vw;
-    background-color: #1F3540;
+    background-color: #1f3540;
 }
 .home-wrapper {
     height: 100%;
@@ -22,7 +22,9 @@
     height: 10%;
     z-index: 1;
 }
-.home-header span { color: #4cc75e;}
+.home-header span {
+    color: #4cc75e;
+}
 .add-friend-button {
     width: 100%;
     display: flex;
@@ -48,7 +50,7 @@
     border-radius: 50%;
     position: absolute;
     right: 0;
-    top: 1em;
+    top: 15%;
     font-size: 15px;
     background-color: rgb(228, 45, 45);
     color: white;
@@ -57,19 +59,21 @@
     align-items: center;
     justify-content: center;
 }
-.plus-icon {display: none;}
+.plus-icon {
+    display: none;
+}
 
 .add-friend {
     padding: 0.3em 1em;
     color: white;
-    background: #26FFCB;
+    background: #26ffcb;
     border-radius: 20px;
     border: none;
     cursor: pointer;
     font-size: 1.5em;
     font-weight: bold;
     color: white;
-    border: 3px solid #397b9c;
+    border: 1px solid #397b9c;
 }
 .add-friend:hover {
     color: black;
@@ -87,7 +91,7 @@
 .home-body-btn {
     padding: 0.4em 2.5em;
     color: white;
-    background-color: #26FFCB;
+    background-color: #26ffcb;
     border: 1px solid #397b9c;
     border-radius: 20px;
     font-size: 1em;
@@ -100,7 +104,7 @@
     height: 75%;
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+    grid-template-columns: repeat(auto-fit, 150px);
     grid-auto-rows: 170px;
     grid-gap: 30px;
     overflow: hidden;
@@ -116,6 +120,9 @@
     padding: 10% 0px;
     background-color: #1a455a;
     cursor: pointer;
+}
+.home-main .friend-tile:hover {
+    background-color: #1f3540;
 }
 .friend-tile b {
     color: white;
@@ -147,9 +154,9 @@
     align-items: center;
     justify-content: center;
     font-size: 2em;
-    background-color: #1F3540;
-    color: #26FFCB;
-    border: 3px solid #FFCC26;
+    background-color: #1f3540;
+    color: #26ffcb;
+    border: 3px solid #ffcc26;
 }
 .connection-req-sidebar {
     position: absolute;
@@ -214,7 +221,7 @@
     cursor: pointer;
     margin: 0px 1%;
     color: white;
-    background: #26FFCB;
+    background: #26ffcb;
     font-size: 1em;
     font-weight: 800;
 }
@@ -231,7 +238,7 @@
     justify-content: center;
     color: white;
     font-size: 1.5em;
-    background: #26FFCB;
+    background: #26ffcb;
     font-weight: 800;
     border: none;
     border-radius: 10px;
@@ -259,7 +266,9 @@
     .add-friend {
         display: none;
     }
-    .plus-icon { display: contents;}
+    .plus-icon {
+        display: contents;
+    }
     .home-body {
         height: 10%;
         display: flex;
@@ -286,11 +295,27 @@
     .connection-req-sidebar {
         width: 100%;
     }
-    .friend-request-icon{ margin-left: 0.5em;}
+    .friend-request-icon {
+        margin-left: 0.5em;
+    }
+    .friend-request-icon div {
+        top: 25%;
+    }
+    .friend-tile b {
+        font-size: 1.5em;
+    }
+    .friend-logo {
+        font-size: 2.3em;
+    }
 }
 @media only screen and (max-width: 400px) {
     .home-body-btn {
         padding: 0.4em 1.2em;
     }
-    .friend-request-icon { margin-left: 0em;}
+    .friend-request-icon {
+        margin-left: 0em;
+    }
+    .friend-request-icon div {
+        top: 15%;
+    }
 }

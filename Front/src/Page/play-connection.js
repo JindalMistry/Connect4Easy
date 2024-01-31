@@ -17,12 +17,12 @@ export default function PlayConnection({ referesh, setRefreresh }) {
           res.data.push(JSON.parse(JSON.stringify(res.data[0])));
         }
         res.data.forEach(x => {
-            let a = Math.floor(Math.random() * data.length);
-            let b = Math.floor(Math.random() * data.length);
-            x['gradient'] = `linear-gradient(130deg, ${data[a]} 0%, ${data[b]} 73%, ${data[a]} 100%)`;
-            x['color'] = data[data.length - 1 - b];
-            x.refname += " Panchal Mistry"
-        })
+          let a = Math.floor(Math.random() * data.length);
+          let b = Math.floor(Math.random() * data.length);
+          x['gradient'] = `linear-gradient(130deg, ${data[a]} 0%, ${data[b]} 73%, ${data[a]} 100%)`;
+          x['color'] = data[data.length - 1 - b];
+          x.refname += "";
+        });
         setConnections(res.data);
       }
     });
@@ -54,6 +54,11 @@ export default function PlayConnection({ referesh, setRefreresh }) {
         console.log("Temp change : ", temp);
         setConnections(temp);
       }
+      if (obj.type === "MESSAGE") {
+        if (obj.content === "ACCEPT") {
+          loadConnections();
+        }
+      }
     }
   }, [User.socketResponse]);
 
@@ -65,7 +70,7 @@ export default function PlayConnection({ referesh, setRefreresh }) {
       {connections.map((item, index) => {
         return (
           <div key={index} className="friend-tile">
-            <div className="friend-logo" style={{backgroundImage : item.gradient, color : item.color}}>
+            <div className="friend-logo" style={{ backgroundImage: item.gradient, color: item.color }}>
               {item.refname.charAt(0).toUpperCase()}
             </div>
             <b>

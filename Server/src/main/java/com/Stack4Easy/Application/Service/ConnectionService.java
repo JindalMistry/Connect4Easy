@@ -2,6 +2,7 @@ package com.Stack4Easy.Application.Service;
 
 import com.Stack4Easy.Application.DTO.AddConnDto;
 import com.Stack4Easy.Application.DTO.ConnNotification;
+import com.Stack4Easy.Application.DTO.ResponseModel;
 import com.Stack4Easy.Application.DTO.UserNotificationDto;
 import com.Stack4Easy.Application.Entity.Connections;
 import com.Stack4Easy.Application.Entity.UserNotification;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +31,21 @@ public class ConnectionService {
         return connRepository.findByUsernameAndActiveAndIsRequestAccepted(username, true, true);
     }
 
-    public UserNotification addFriend(AddConnDto addConnDto) {
+    public ResponseModel addFriend(AddConnDto addConnDto) {
         UserNotification res = null;
         User user = userRepository.findByUsername(addConnDto.getReference_name())
                 .orElseThrow();
+        Optional<Connections> isFriend = connRepository.findByUsernameAndRefname(addConnDto.getUsername(), addConnDto.getReference_name());
+        if(isFriend.isPresent()){
+            String message = "You have already pending request to this user!";
+            if(isFriend.get().getIsRequestAccepted()){
+                message = "You are already friend with this user!";
+            }
+            return new ResponseModel(
+                    message,
+                    500
+            );
+        }
         connRepository.save(
                 new Connections(
                         addConnDto.getUser_id(),
@@ -93,7 +106,11 @@ public class ConnectionService {
                         false
                 )
         );
-        return res;
+        return new ResponseModel(
+                "Friend request has been sent!",
+                200,
+                res
+        );
     }
 
     @Transactional
@@ -103,20 +120,16 @@ public class ConnectionService {
             connRepository.deleteByUsername(addConnDto.getReference_name());
         }
         else if(type.matches("ACCEPT")){
-            Connections conn = connRepository.findByUsernameAndRefname(
+            Optional<Connections> conn = connRepository.findByUsernameAndRefname(
                     addConnDto.getUsername(),
                     addConnDto.getReference_name()
             );
-            Connections connRef = connRepository.findByUsernameAndRefname(
+            Optional<Connections> connRef = connRepository.findByUsernameAndRefname(
                     addConnDto.getReference_name(),
                     addConnDto.getUsername()
             );
-            if(conn != null) {
-                conn.setIsRequestAccepted(true);
-            }
-            if(connRef != null) {
-                connRef.setIsRequestAccepted(true);
-            }
+            conn.ifPresent(connections -> connections.setIsRequestAccepted(true));
+            connRef.ifPresent(connections -> connections.setIsRequestAccepted(true));
         }
         User user = userRepository.findByUsername(addConnDto.getReference_name())
                 .orElseThrow();

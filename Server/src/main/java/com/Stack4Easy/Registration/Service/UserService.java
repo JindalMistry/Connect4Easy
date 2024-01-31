@@ -1,8 +1,10 @@
 package com.Stack4Easy.Registration.Service;
 
+import com.Stack4Easy.Application.DTO.ConnNotification;
 import com.Stack4Easy.Application.DTO.ConnSearch;
 import com.Stack4Easy.Application.Entity.Connections;
 import com.Stack4Easy.Application.Repository.ConnRepository;
+import com.Stack4Easy.Application.Service.ConnectionService;
 import com.Stack4Easy.Registration.DTO.UserDto;
 import com.Stack4Easy.Registration.Entity.Role;
 import com.Stack4Easy.Registration.Entity.User;
@@ -15,6 +17,7 @@ import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,6 +34,7 @@ public class UserService implements UserDetailsService {
     private final JwtService jwtService;
     private final ConnRepository connRepository;
     private final EntityManager entityManager;
+    private final SimpMessagingTemplate messagingTemplate;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
@@ -88,7 +92,28 @@ public class UserService implements UserDetailsService {
             User user = dbUser.get();
             user.setStatus(UserStatus.OFFLINE);
         }
-        throw new UsernameNotFoundException("User with this username does not exists!");
+        else {
+            throw new UsernameNotFoundException("User with this username does not exists!");
+        }
+        List<Connections> connectionsList =  connRepository.findByUsernameAndActiveAndIsRequestAccepted(userDto.getUsername(), true, true);
+
+        connectionsList.forEach(user -> {
+            messagingTemplate.convertAndSendToUser(
+                    user.getRefname(),
+                    "/queue/friends",
+                    ConnNotification.builder()
+                            .user_id(user.getUser_id())
+                            .username(user.getUsername())
+                            .type("STATUS")
+                            .value("OFFLINE")
+                            .build()
+            );
+        });
+        List<Connections> friendList = connRepository.findByRefname(userDto.getUsername());
+        friendList.forEach(obj -> {
+            obj.setActive(false);
+        });
+        return "Success";
     }
 
     public List<ConnSearch> getUserBySearch(String searchString, Integer user_id) {

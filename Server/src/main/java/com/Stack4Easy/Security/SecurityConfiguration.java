@@ -48,10 +48,9 @@ public class SecurityConfiguration {
                 })
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/auth/**", "/ws/**", "/ws","/h2-console","/h2-console/**").permitAll()
+                            .requestMatchers("/auth/register","/auth/login", "/ws/**", "/ws","/h2-console","/h2-console/**").permitAll()
                             .anyRequest()
-                            .permitAll();
-//                            .authenticated();
+                            .authenticated();
                 })
                 .sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

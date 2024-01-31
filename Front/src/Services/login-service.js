@@ -10,3 +10,7 @@ export const login = (data) => {
     let apiUrl = url + "auth/login";
     return axios.post(apiUrl, data);
 };
+export const logout = (username) => {
+    let apiUrl = url + 'auth/logout/' + username;
+    return axios.get(apiUrl);
+};

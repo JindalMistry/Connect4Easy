@@ -18,6 +18,7 @@ import {
   setNotifications,
   updateActiveNotification,
 } from "../Store/connectSlice";
+import { logout } from "../Services/login-service";
 
 const SOCKET_URL = "ws://localhost:8080/ws";
 const SOCKJS_URL = "http://localhost:8080/ws";
@@ -44,6 +45,7 @@ export default function Home(props) {
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
+        connectHeaders: { sessionId: location.state.username }
       });
       stompClient.webSocketFactory = function () {
         return new SockJS(SOCKJS_URL);
@@ -57,28 +59,31 @@ export default function Home(props) {
           stompClient.subscribe(
             "/user/" + location.state.username + "/queue/friends",
             (e) => {
-              if(e && e.body){
+              if (e && e.body) {
                 dispatch(setSocketResponse({ res: e.body }));
               }
-            }
+            },
           );
+          // stompClient.subscribe(
+          //   "/topic/public",
+          //   (e) => {
+
+          //   },
+          // );
+          // stompClient.publish('/user/application.subscribeUser', {}, location.state.username);
         }
       };
       stompClient.onDisconnect = () => {
-        console.log("Disconneced.!");
+        logoutProcess();
       };
       stompClient.activate();
     }
   }, []);
-
   useEffect(() => {
     if (User.socketResponse) {
       let res = JSON.parse(User.socketResponse);
       if (res.type === "MESSAGE") {
         loadNotifications();
-        if (res.content === "ACCEPT") {
-          setRefConnList(true);
-        }
       }
     }
   }, [User.socketResponse]);
@@ -145,7 +150,20 @@ export default function Home(props) {
           });
         }
       })
-      .catch((ex) => {});
+      .catch((ex) => { });
+  };
+  const logoutProcess = () => {
+    logout(User.username).then(res => {
+
+    }).catch(ex => {
+      let res = ex.response;
+      if (res.status === 403) {
+        alert('You are not authorized user!');
+      }
+      else if (res.status === 500) {
+        alert(res.data.message);
+      }
+    });
   };
 
   useEffect(() => {
@@ -153,21 +171,20 @@ export default function Home(props) {
   }, []);
 
   useEffect(() => {
-    if(sidebarRef) {
-      if(sidebarRef.current){
+    if (sidebarRef) {
+      if (sidebarRef.current) {
         window.addEventListener('mousedown', (e) => {
-          if(!sidebarRef.current.contains(e.target)){
+          if (!sidebarRef.current.contains(e.target)) {
             sidebarRef.current.className = "connection-req-sidebar close";
           }
-        })
+        });
       }
     }
-  },[sidebarRef])
+  }, [sidebarRef]);
   return (
     <>
-      {showAddConnPopup ? (
-        <AddConnection onClose={() => setShowAddConnPopup(false)} />
-      ) : null}
+      {showAddConnPopup ?
+        <AddConnection onClose={() => setShowAddConnPopup(false)} show={showAddConnPopup} /> : null}
       <div className="connection-req-sidebar close" ref={sidebarRef}>
         <div className="connection-req-header">
           <p>Notification</p>
@@ -208,7 +225,7 @@ export default function Home(props) {
           <Button
             label={"Log out"}
             className={"log-out-btn"}
-            onClick={() => {}}
+            onClick={logoutProcess}
           />
         </div>
       </div>
@@ -239,7 +256,12 @@ export default function Home(props) {
               </div>
             ) : null}
             {activeTab === "2" ? (
-              <div className="friend-request-icon plus-icon">
+              <div
+                className="friend-request-icon plus-icon"
+                onClick={() => {
+                  setShowAddConnPopup(true);
+                }}
+              >
                 <ion-icon name="add-circle-outline"></ion-icon>
               </div>
             ) : null}
