@@ -4,6 +4,7 @@ import com.Stack4Easy.Application.DTO.AddConnDto;
 import com.Stack4Easy.Application.DTO.ConnNotification;
 import com.Stack4Easy.Application.DTO.ResponseModel;
 import com.Stack4Easy.Application.DTO.UserNotificationDto;
+import com.Stack4Easy.Application.Entity.ConnectionResults;
 import com.Stack4Easy.Application.Entity.Connections;
 import com.Stack4Easy.Application.Entity.UserNotification;
 import com.Stack4Easy.Application.Repository.ConnRepository;
@@ -14,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +27,7 @@ public class ConnectionService {
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final UserNotificationService userNotificationService;
+    private final ConnResultsService connResultsService;
     public List<Connections> getFriends(String username){
         return connRepository.findByUsernameAndIsRequestAccepted(username, true);
     }
@@ -161,5 +165,107 @@ public class ConnectionService {
                 String.format("You are now friends with %s", addConnDto.getUsername()),
                 200
         );
+    }
+
+    public void sendChallenge(AddConnDto connections) {
+        Optional<User> user = userRepository.findByUsername(connections.getReference_name());
+        if(user.isPresent()){
+            if(user.get().getStatus() == UserStatus.ONLINE){
+                messagingTemplate.convertAndSendToUser(
+                        connections.getReference_name(),
+                        "/queue/friends",
+                        ConnNotification.builder()
+                                .user_id(connections.getUser_id())
+                                .username(connections.getUsername())
+                                .type("CHALLENGE")
+                                .content("SEND")
+                                .build()
+                );
+            }
+        }
+        userNotificationService.pushNotification(
+                new UserNotificationDto(
+                        0L,
+                        String.format("You have a challenge from %s", connections.getUsername()),
+                        connections.getRef_id(),
+                        connections.getReference_name(),
+                        false,
+                        "CHALLENGE",
+                        connections.getUser_id(),
+                        connections.getUsername()
+                )
+        );
+    }
+
+    public ResponseModel acceptChallenge(UserNotificationDto connDto) {
+        ResponseModel res = new ResponseModel();
+        res.setStatus(200);
+        Optional<User> optUser = userRepository.findByUsername(connDto.getRefname());
+
+        if(optUser.isPresent()){
+            User user = optUser.get();
+            UserNotification notification = userNotificationService.getNotificationById(connDto.getNotification_id());
+            if(notification != null) {
+                long dateDiff = (new Date().getTime() - notification.getTimestamp().getTime()) / (1000 * 60);
+                boolean isValid = (dateDiff < 5);
+                if(isValid){
+                    if(user.getStatus() == UserStatus.INGAME){
+                        res.setMessage("Player is already in game!");
+                    }
+                    else if(user.getStatus() == UserStatus.OFFLINE){
+                        res.setMessage("Player is not online!");
+                    }
+                    else{
+                        userNotificationService.pushNotification(
+                                new UserNotificationDto(
+                                        0L,
+                                        String.format("You challenge has been accepted by %s", connDto.getUsername()),
+                                        connDto.getRef_id(),
+                                        connDto.getRefname(),
+                                        false,
+                                        "CHALLENGE",
+                                        connDto.getUser_id(),
+                                        connDto.getUsername()
+                                )
+                        );
+                        messagingTemplate.convertAndSendToUser(
+                                connDto.getRefname(),
+                                "/queue/friends",
+                                ConnNotification.builder()
+                                        .user_id(connDto.getUser_id())
+                                        .username(connDto.getUsername())
+                                        .type("CHALLENGE")
+                                        .content("ACCEPT")
+                                        .build()
+                        );
+                        ConnectionResults room = connResultsService.createRoom(
+                                new AddConnDto(
+                                        connDto.getUser_id(),
+                                        connDto.getUsername(),
+                                        connDto.getRef_id(),
+                                        connDto.getRefname()
+                                )
+                        );
+                        res.setMessage("Game Challenge has been accepted!");
+                    }
+                }
+                else{
+                    res.setMessage("Session has expired, INFO - Sessions are only valid for 5 minutes.");
+                }
+                userNotificationService.pullNotification(
+                        new UserNotificationDto(
+                                notification.getNotification_id(),
+                                "",
+                                0,
+                                "",
+                                false,
+                                "",
+                                0,
+                                ""
+                        )
+                );
+            }
+        }
+        return res;
     }
 }

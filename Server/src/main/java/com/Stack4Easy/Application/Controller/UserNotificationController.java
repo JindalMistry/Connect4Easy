@@ -23,9 +23,16 @@ public class UserNotificationController {
     private final UserNotificationService userNotificationService;
 
     @PostMapping("/user/pushNotification")
-    public ResponseEntity<UserNotification> pushNotification(@RequestBody UserNotificationDto userNotificationDto) {
+    public ResponseEntity<ResponseModel> pushNotification(@RequestBody UserNotificationDto userNotificationDto) {
+        ResponseModel res = new ResponseModel(
+                "Error while sending notification",
+                500
+        );
         UserNotification notification = userNotificationService.pushNotification(userNotificationDto);
-        return ResponseEntity.ok(notification);
+        if(notification != null) {
+            res.setData(notification);
+        }
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/user/pullNotification")
@@ -34,15 +41,19 @@ public class UserNotificationController {
     }
 
     @PostMapping("/user/updateNotification")
-    public ResponseEntity<String> updateNotification(@RequestBody UserNotificationDto userNotificationDto){
+    public ResponseEntity<ResponseModel> updateNotification(@RequestBody UserNotificationDto userNotificationDto){
+        ResponseModel res = new ResponseModel(
+                "Notification status updated successfully.",
+                200
+        );
         try{
             userNotificationService.updateNotification(userNotificationDto);
-            return ResponseEntity.ok("SENT");
         }
         catch(Exception ex){
-            log.info(ex.getMessage());
-            return ResponseEntity.ok("ERROR");
+            res.setMessage(ex.getMessage());
+            res.setStatus(500);
         }
+        return ResponseEntity.ok(res);
     }
     @GetMapping("/user/getNotification/{username}")
     public ResponseEntity<List<UserNotification>> getUserNotifications(@PathVariable String username){

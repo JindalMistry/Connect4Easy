@@ -1,5 +1,6 @@
 package com.Stack4Easy.Registration.Controller;
 import com.Stack4Easy.Application.DTO.ConnNotification;
+import com.Stack4Easy.Application.DTO.ResponseModel;
 import com.Stack4Easy.Application.Entity.Connections;
 import com.Stack4Easy.Application.Service.ConnectionService;
 import com.Stack4Easy.Registration.DTO.UserDto;
@@ -27,13 +28,13 @@ public class UserController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ConnectionService connectionService;
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserDto userDto){
-        String response = userService.register(userDto);
+    public ResponseEntity<ResponseModel> register(@RequestBody UserDto userDto){
+        ResponseModel response = userService.register(userDto);
         return ResponseEntity.ok(response);
     }
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody UserDto userDto){
-        UserDto response = userService.login(userDto);
+    public ResponseEntity<ResponseModel> login(@RequestBody UserDto userDto){
+        ResponseModel response = userService.login(userDto);
         List<Connections> connectionsList =  connectionService.getOnlineFriends(userDto.getUsername());
 
         connectionsList.forEach(user -> {

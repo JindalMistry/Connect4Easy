@@ -3,19 +3,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { UserInfo } from "../Store/authSlice";
 import { getConnections } from "../Services/conn-service";
 import data from '../colors.json';
+import ConnDetail from "../Popup/conn-detail";
+import ReceiveChallange from "../Popup/receive-challange";
 
 export default function PlayConnection({ referesh, setRefreresh }) {
   const User = useSelector(UserInfo);
   const dispatch = useDispatch();
   const [connections, setConnections] = useState([]);
+  const [showConnDetailModalPopup, setShowConnDetailModalPopup] = useState(false);
+  const [showChallangeReceivedModalPopup, setShowChallangeReceivedModalPopup] = useState(false);
+  const [selectedTile, setSelectedTile] = useState({});
 
   const loadConnections = () => {
     getConnections(User.username).then((res) => {
       if (res.status === 200) {
         console.log("Friends found : ", res.data);
-        for (let i = 0; i < 100; i++) {
-          res.data.push(JSON.parse(JSON.stringify(res.data[0])));
-        }
+        // for (let i = 0; i < 100; i++) {
+        //   res.data.push(JSON.parse(JSON.stringify(res.data[0])));
+        // }
         res.data.forEach(x => {
           let a = Math.floor(Math.random() * data.length);
           let b = Math.floor(Math.random() * data.length);
@@ -66,25 +71,54 @@ export default function PlayConnection({ referesh, setRefreresh }) {
     loadConnections();
   }, []);
   return (
-    <div className="home-main">
-      {connections.map((item, index) => {
-        return (
-          <div key={index} className="friend-tile">
-            <div className="friend-logo" style={{ backgroundImage: item.gradient, color: item.color }}>
-              {item.refname.charAt(0).toUpperCase()}
+    <>
+      {showConnDetailModalPopup ?
+        <ConnDetail
+          show={showConnDetailModalPopup}
+          onClose={() => {
+            setShowConnDetailModalPopup(false);
+            setSelectedTile({});
+          }}
+          conn={selectedTile}
+        />
+        :
+        null
+      }
+      {
+        showChallangeReceivedModalPopup ?
+          <ReceiveChallange
+            show={showChallangeReceivedModalPopup}
+            onClose={() => { setShowChallangeReceivedModalPopup(false); }}
+            sender={{}}
+          />
+          :
+          null
+      }
+      <div className="home-main">
+        {connections.map((item, index) => {
+          return (
+            <div key={index} className="friend-tile"
+              onClick={() => {
+                setShowConnDetailModalPopup(true);
+                setSelectedTile(item);
+              }}
+            >
+              <div className="friend-logo" style={{ backgroundImage: item.gradient, color: item.color }}>
+                {item.refname.charAt(0).toUpperCase()}
+              </div>
+              <b>
+                <div
+                  className={`friend-status ${item.active ? "green" : "red"}`}
+                ></div>{" "}
+                {item.refname}
+              </b>
+              <b>
+                {item.wins} - {item.total_games - item.wins}
+              </b>
             </div>
-            <b>
-              <div
-                className={`friend-status ${item.active ? "green" : "red"}`}
-              ></div>{" "}
-              {item.refname}
-            </b>
-            <b>
-              {item.wins} - {item.total_games - item.wins}
-            </b>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </>
   );
 }

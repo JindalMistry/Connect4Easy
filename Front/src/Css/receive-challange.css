@@ -1,0 +1,54 @@
+.receive-challange-wrapper {
+    height: 100%;
+    width: 100%;
+    background-color: rgb(238, 252, 238);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+.accept-challange-para {
+    padding: 2% 5%;
+}
+
+.receive-challange-btn-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 2% 0%;
+    align-items: center;
+}
+.receive-challange-play-btn {
+    width: 30%;
+    padding: 0.1em 2em;
+    color: white;
+    text-transform: uppercase;
+    /* border: 1px solid #397b9c; */
+    border: none;
+    border-radius: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.accept {
+    background-color: rgb(33, 230, 33);
+}
+.decline {
+    background-color: rgb(182, 0, 0);
+}
+.accept:hover {
+    color: black;
+}
+.decline:hover {
+    color: black;
+}
+
+@media screen and (max-width: 600px) {
+    .receive-challange-play-btn {
+        width: 40%;
+    }
+}
+@media screen and (max-width: 400px) {
+}

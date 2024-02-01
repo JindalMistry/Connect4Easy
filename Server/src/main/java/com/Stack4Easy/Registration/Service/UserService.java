@@ -2,6 +2,7 @@ package com.Stack4Easy.Registration.Service;
 
 import com.Stack4Easy.Application.DTO.ConnNotification;
 import com.Stack4Easy.Application.DTO.ConnSearch;
+import com.Stack4Easy.Application.DTO.ResponseModel;
 import com.Stack4Easy.Application.Entity.Connections;
 import com.Stack4Easy.Application.Repository.ConnRepository;
 import com.Stack4Easy.Application.Service.ConnectionService;
@@ -44,14 +45,24 @@ public class UserService implements UserDetailsService {
         throw new UsernameNotFoundException("User with this name does not exist!");
     }
 
-    public String register(UserDto userDto) {
+    public ResponseModel register(UserDto userDto) {
+        ResponseModel res = new ResponseModel();
         Optional<User> user = userRepository.findByUsername(userDto.getUsername());
         if(user.isPresent()){
-            throw new UsernameNotFoundException("User with this username already exists!");
+            res.setMessage("User with this username already exists!");
+            res.setStatus(500);
+            return res;
         }
         Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByAuthority("USER")
-                .orElseThrow(() -> new IllegalStateException("Role not found...")));
+        Optional<Role> userRole = roleRepository.findByAuthority("USER");
+        if(userRole.isPresent()){
+            roles.add(userRole.get());
+        }
+        else{
+            res.setMessage("Role not found...");
+            res.setStatus(500);
+            return res;
+        }
         log.info(userDto.toString());
         User newUser = new User(
             userDto.getUsername(),
@@ -59,30 +70,45 @@ public class UserService implements UserDetailsService {
             roles
         );
         log.info(newUser.toString());
-        userRepository.save(newUser);
-        return "User registered successfully";
+        User createdUser = userRepository.save(newUser);
+        res.setMessage("User has been registered!");
+        res.setStatus(200);
+        res.setData(createdUser);
+        return res;
     }
     @Transactional
-    public UserDto login(UserDto userDto) {
+    public ResponseModel login(UserDto userDto) {
         Optional<User> dbUser = userRepository.findByUsername(userDto.getUsername());
+        ResponseModel res = new ResponseModel();
         if(dbUser.isPresent()){
             User user = dbUser.get();
             if(user.getPassword().matches(userDto.getPassword())){
-                user.setStatus(UserStatus.ONLINE);
-                List<Connections> friends = connRepository.findByRefname(userDto.getUsername());
-                friends.forEach((item) -> {
-                    item.setActive(true);
-                });
-                return new UserDto(
-                        user.getUser_id(),
-                        user.getUsername(),
-                        "",
-                        jwtService.generateToken(user)
-                );
+                if(user.getStatus() == UserStatus.OFFLINE){
+                    user.setStatus(UserStatus.ONLINE);
+                    List<Connections> friends = connRepository.findByRefname(userDto.getUsername());
+                    friends.forEach((item) -> {
+                        item.setActive(true);
+                    });
+                    res.setStatus(200);
+                    res.setMessage("Logged in successfully.");
+                    res.setData(new UserDto(
+                            user.getUser_id(),
+                            user.getUsername(),
+                            "",
+                            jwtService.generateToken(user)
+                    ));
+                    return res;
+                }
+                res.setStatus(500);
+                res.setMessage("User is already logged in on another device, please verify accordingly.");
             }
-            throw new IllegalStateException("Password does not match!");
+            res.setStatus(500);
+            res.setMessage("Password does not match!");
+            return res;
         }
-        throw new UsernameNotFoundException("User with this username does not exists!");
+        res.setStatus(500);
+        res.setMessage("User with this username does not exist!");
+        return res;
     }
 
     @Transactional

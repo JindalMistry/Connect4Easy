@@ -50,4 +50,13 @@ public class ConnectionsController {
         return ResponseEntity.ok(connectionService.acceptConnection(addConnDto, type));
     }
 
+    @PostMapping("/friends/sendChallenge")
+    public void sendChallenge(@RequestBody AddConnDto connections) {
+        connectionService.sendChallenge(connections);
+    }
+
+    @PostMapping("/friends/acceptChallenge")
+    public void acceptChallenge(@RequestBody UserNotificationDto connDto) {
+        connectionService.acceptChallenge(connDto);
+    }
 }

@@ -6,6 +6,7 @@ import com.Stack4Easy.Application.Entity.UserNotification;
 import com.Stack4Easy.Application.Repository.UserNotificationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,20 +14,28 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserNotificationService {
     private final UserNotificationRepository userNotificationRepository;
     public UserNotification pushNotification(UserNotificationDto userNotificationDto) {
-        return userNotificationRepository.save(
-                new UserNotification(
-                        userNotificationDto.getMessage(),
-                        userNotificationDto.getUser_id(),
-                        userNotificationDto.getUsername(),
-                        false,
-                        userNotificationDto.getType(),
-                        userNotificationDto.getRef_id(),
-                        userNotificationDto.getRefname()
-                )
-        );
+        UserNotification notification = null;
+        try{
+            notification = userNotificationRepository.save(
+                    new UserNotification(
+                            userNotificationDto.getMessage(),
+                            userNotificationDto.getUser_id(),
+                            userNotificationDto.getUsername(),
+                            false,
+                            userNotificationDto.getType(),
+                            userNotificationDto.getRef_id(),
+                            userNotificationDto.getRefname()
+                    )
+            );
+        }
+        catch(Exception ex){
+            log.info("user notification push exception : {}", ex.getMessage());
+        }
+        return notification;
     }
     public ResponseModel pullNotification(UserNotificationDto notificationDto) {
         Optional<UserNotification> notification = userNotificationRepository.findById(notificationDto.getNotification_id());
@@ -52,5 +61,9 @@ public class UserNotificationService {
     }
     public List<UserNotification> getNotificationByUsername(String username) {
         return userNotificationRepository.findAllByUsernameOrderByTimestampDesc(username);
+    }
+    public UserNotification getNotificationById(Long notificationId) {
+        Optional<UserNotification> optionalUserNotification = userNotificationRepository.findById(notificationId);
+        return optionalUserNotification.orElse(null);
     }
 }

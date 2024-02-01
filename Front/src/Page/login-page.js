@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TextBox from '../Component/TextBox';
 import Button from '../Component/Button';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../Services/login-service';
+import { login, register } from '../Services/login-service';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,24 +45,25 @@ export default function Login() {
                 password: password
             };
             login(obj).then(d => {
-                if (d.status === 200) {
-                    console.log("D.data : ", d.data);
-                    dispatch(setUser({ user_id: d.data.user_id, username: username, token: d.data.token }));
-                    navigate(
-                        "/home",
-                        { state: { username: username, user_id: d.data.user_id } }
-                    );
-                    axios.interceptors.request.use(function (config) {
-                        const token = d.data.token;
-                        config.baseURL = 'http://localhost:8080/';
-                        // config.baseURL = 'http://192.168.100.43:8080/';
-                        config.headers.Authorization = `Bearer ${token}`;
-                        return config;
-                    });
-
-                }
-                else {
-                    console.log("D.data : ", d.data);
+                let response = d.data;
+                if (response) {
+                    console.log("at login : ", response);
+                    alert(response.Message);
+                    if (response.Status === 200) {
+                        console.log("D.data : ", response.Data);
+                        dispatch(setUser({ user_id: response.Data.user_id, username: username, token: response.Data.token }));
+                        navigate(
+                            "/home",
+                            { state: { username: username, user_id: response.Data.user_id } }
+                        );
+                        axios.interceptors.request.use(function (config) {
+                            const token = response.Data.token;
+                            config.baseURL = 'http://localhost:8080/';
+                            // config.baseURL = 'http://192.168.100.43:8080/';
+                            config.headers.Authorization = `Bearer ${token}`;
+                            return config;
+                        });
+                    }
                 }
             }).catch(ex => {
                 let res = ex.response;
@@ -72,6 +73,21 @@ export default function Login() {
                 else if (res.status === 500) {
                     alert(res.data.message);
                 }
+            });
+        }
+        if (status === "register") {
+            let obj = {
+                username: username,
+                password: password
+            };
+            register(obj).then(d => {
+                let res = d.data;
+                if (res.Status === 200) {
+                    alert('One time password has been sent to registered email and is only valid for 5 minutes.');
+                    navigate("/otp");
+                }
+            }).catch(ex => {
+                console.log("Exception found 86: ", ex);
             });
         }
     };
