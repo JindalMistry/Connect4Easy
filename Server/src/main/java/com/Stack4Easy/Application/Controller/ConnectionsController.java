@@ -56,7 +56,7 @@ public class ConnectionsController {
     }
 
     @PostMapping("/friends/acceptChallenge")
-    public void acceptChallenge(@RequestBody UserNotificationDto connDto) {
-        connectionService.acceptChallenge(connDto);
+    public ResponseEntity<ResponseModel> acceptChallenge(@RequestBody UserNotificationDto connDto) {
+        return ResponseEntity.ok(connectionService.acceptChallenge(connDto));
     }
 }

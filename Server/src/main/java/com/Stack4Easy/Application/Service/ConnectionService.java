@@ -177,8 +177,8 @@ public class ConnectionService {
                         ConnNotification.builder()
                                 .user_id(connections.getUser_id())
                                 .username(connections.getUsername())
-                                .type("CHALLENGE")
-                                .content("SEND")
+                                .type("CHALLENGE_SEND")
+                                .content("")
                                 .build()
                 );
             }
@@ -228,16 +228,6 @@ public class ConnectionService {
                                         connDto.getUsername()
                                 )
                         );
-                        messagingTemplate.convertAndSendToUser(
-                                connDto.getRefname(),
-                                "/queue/friends",
-                                ConnNotification.builder()
-                                        .user_id(connDto.getUser_id())
-                                        .username(connDto.getUsername())
-                                        .type("CHALLENGE")
-                                        .content("ACCEPT")
-                                        .build()
-                        );
                         ConnectionResults room = connResultsService.createRoom(
                                 new AddConnDto(
                                         connDto.getUser_id(),
@@ -246,11 +236,28 @@ public class ConnectionService {
                                         connDto.getRefname()
                                 )
                         );
-                        res.setMessage("Game Challenge has been accepted!");
+                        if(room != null){
+                            messagingTemplate.convertAndSendToUser(
+                                    connDto.getRefname(),
+                                    "/queue/friends",
+                                    ConnNotification.builder()
+                                            .user_id(connDto.getUser_id())
+                                            .username(connDto.getUsername())
+                                            .type("CHALLENGE_ACCEPT")
+                                            .content(room.getGame_id().toString())
+                                            .build()
+                            );
+                            res.setMessage("Game Challenge has been accepted!");
+                            res.setData(room);
+                        }
+                        else{
+                            res.setStatus(500);
+                            res.setMessage("Error while creating game room");
+                        }
                     }
                 }
                 else{
-                    res.setMessage("Session has expired, INFO - Sessions are only valid for 5 minutes.");
+                    res.setMessage("Session has expired, PS-Sessions are only valid for 5 minutes.");
                 }
                 userNotificationService.pullNotification(
                         new UserNotificationDto(

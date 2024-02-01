@@ -1,9 +1,10 @@
 package com.Stack4Easy.Application.DTO;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 @Builder
 public class AddConnDto {
     private Integer user_id;
