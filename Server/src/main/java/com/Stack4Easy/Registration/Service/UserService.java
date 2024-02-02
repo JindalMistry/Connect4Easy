@@ -83,7 +83,7 @@ public class UserService implements UserDetailsService {
         if(dbUser.isPresent()){
             User user = dbUser.get();
             if(user.getPassword().matches(userDto.getPassword())){
-                if(user.getStatus() == UserStatus.OFFLINE){
+                if(user.getStatus() == UserStatus.OFFLINE || true){
                     user.setStatus(UserStatus.ONLINE);
                     List<Connections> friends = connRepository.findByRefname(userDto.getUsername());
                     friends.forEach((item) -> {
@@ -101,6 +101,7 @@ public class UserService implements UserDetailsService {
                 }
                 res.setStatus(500);
                 res.setMessage("User is already logged in on another device, please verify accordingly.");
+                return res;
             }
             res.setStatus(500);
             res.setMessage("Password does not match!");

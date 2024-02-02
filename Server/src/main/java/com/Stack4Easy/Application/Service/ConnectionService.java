@@ -170,6 +170,18 @@ public class ConnectionService {
     public void sendChallenge(AddConnDto connections) {
         Optional<User> user = userRepository.findByUsername(connections.getReference_name());
         if(user.isPresent()){
+            UserNotification notification = userNotificationService.pushNotification(
+                    new UserNotificationDto(
+                            0L,
+                            String.format("You have a challenge from %s", connections.getUsername()),
+                            connections.getRef_id(),
+                            connections.getReference_name(),
+                            false,
+                            "CHALLENGE",
+                            connections.getUser_id(),
+                            connections.getUsername()
+                    )
+            );
             if(user.get().getStatus() == UserStatus.ONLINE){
                 messagingTemplate.convertAndSendToUser(
                         connections.getReference_name(),
@@ -178,23 +190,11 @@ public class ConnectionService {
                                 .user_id(connections.getUser_id())
                                 .username(connections.getUsername())
                                 .type("CHALLENGE_SEND")
-                                .content("")
+                                .content(notification.getNotification_id().toString())
                                 .build()
                 );
             }
         }
-        userNotificationService.pushNotification(
-                new UserNotificationDto(
-                        0L,
-                        String.format("You have a challenge from %s", connections.getUsername()),
-                        connections.getRef_id(),
-                        connections.getReference_name(),
-                        false,
-                        "CHALLENGE",
-                        connections.getUser_id(),
-                        connections.getUsername()
-                )
-        );
     }
 
     public ResponseModel acceptChallenge(UserNotificationDto connDto) {
@@ -274,5 +274,49 @@ public class ConnectionService {
             }
         }
         return res;
+    }
+
+    public ResponseModel declineChallenge(UserNotificationDto connDto) {
+        userNotificationService.pullNotification(
+                new UserNotificationDto(
+                        connDto.getNotification_id(),
+                        "",
+                        0,
+                        "",
+                        false,
+                        "",
+                        0,
+                        ""
+                )
+        );
+        userNotificationService.pushNotification(
+                new UserNotificationDto(
+                        0L,
+                        String.format("%s declined your challenge request!", connDto.getUsername()),
+                        connDto.getRef_id(),
+                        connDto.getRefname(),
+                        false,
+                        "MESSAGE",
+                        connDto.getUser_id(),
+                        connDto.getUsername()
+                )
+        );
+        Optional<User> user = userRepository.findByUsername(connDto.getRefname());
+        if(user.isPresent() && user.get().getStatus() == UserStatus.ONLINE){
+            messagingTemplate.convertAndSendToUser(
+                    connDto.getRefname(),
+                    "/queue/friends",
+                    ConnNotification.builder()
+                            .user_id(connDto.getUser_id())
+                            .username(connDto.getUsername())
+                            .type("CHALLENGE_DECLINE")
+                            .content(connDto.getNotification_id().toString())
+                            .build()
+            );
+        }
+        return new ResponseModel(
+                "Challenge request declined.",
+                200
+        );
     }
 }

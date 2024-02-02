@@ -51,12 +51,21 @@ public class ConnectionsController {
     }
 
     @PostMapping("/friends/sendChallenge")
-    public void sendChallenge(@RequestBody AddConnDto connections) {
+    public ResponseEntity<ResponseModel> sendChallenge(@RequestBody AddConnDto connections) {
+        ResponseModel responseModel = new ResponseModel(
+                "Challenge has been sent!",
+                200
+        );
         connectionService.sendChallenge(connections);
+        return ResponseEntity.ok(responseModel);
     }
 
     @PostMapping("/friends/acceptChallenge")
     public ResponseEntity<ResponseModel> acceptChallenge(@RequestBody UserNotificationDto connDto) {
         return ResponseEntity.ok(connectionService.acceptChallenge(connDto));
+    }
+    @PostMapping("/friends/declineChallenge")
+    public ResponseEntity<ResponseModel> declineChallenge(@RequestBody UserNotificationDto connDto){
+        return ResponseEntity.ok(connectionService.declineChallenge(connDto));
     }
 }

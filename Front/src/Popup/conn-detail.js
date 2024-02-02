@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Modal from '../Component/Modal';
 import Button from '../Component/Button';
 import '../Css/conn-detail.css';
+import { sendChallenge } from '../Services/conn-service';
+import { useSelector } from 'react-redux';
+import { UserInfo } from '../Store/authSlice';
+import { ConnectInfo } from '../Store/connectSlice';
 
 export default function ConnDetail({ onClose, show, conn }) {
+    const User = useSelector(UserInfo);
+    const Connector = useSelector(ConnectInfo);
+    const onPlayButtonPress = () => {
+        let obj = {
+            user_id: User.user_id,
+            username: User.username,
+            ref_id: conn.ref_id,
+            reference_name: conn.refname,
+        };
+        sendChallenge(obj).then((res) => {
+            let response = res.data;
+            if (response.Status === 200) {
+                alert(response.Message);
+                if (onClose) {
+                    onClose();
+                }
+            }
+        });
+    };
+
     return (
         <Modal
             type={"small-square"}
@@ -36,7 +60,7 @@ export default function ConnDetail({ onClose, show, conn }) {
                     <div className='conn-detail-btn-wrapper'>
                         <Button
                             label={"Play"}
-                            onClick={() => { }}
+                            onClick={onPlayButtonPress}
                             className={"conn-detail-play-btn"}
                         />
                     </div>

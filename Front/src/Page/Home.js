@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { json, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import Button from "../Component/Button";
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { UserInfo, setSocketResponse } from "../Store/authSlice";
 import {
   acceptConnection,
+  declineChallenge,
   getNotifications,
   pullNotification,
 } from "../Services/conn-service";
@@ -19,6 +20,8 @@ import {
   updateActiveNotification,
 } from "../Store/connectSlice";
 import { logout } from "../Services/login-service";
+import LoadingScreen from "../Component/LoadingScreen";
+import ReceiveChallange from "../Popup/receive-challange";
 
 const SOCKET_URL = "ws://localhost:8080/ws";
 const SOCKJS_URL = "http://localhost:8080/ws";
@@ -37,6 +40,8 @@ export default function Home(props) {
   const [activeTab, setActiveTab] = useState("2");
   const [notiData, setNotiData] = useState([]);
   const [refConnList, setRefConnList] = useState(false);
+  const [showChallangeReceivedModalPopup, setShowChallangeReceivedModalPopup] = useState(false);
+  const [challenger, setChallenger] = useState({});
 
   useEffect(() => {
     if (stompClient === null) {
@@ -63,7 +68,7 @@ export default function Home(props) {
                 dispatch(setSocketResponse({ res: e.body }));
               }
             },
-            {sessionId : location.state.username}
+            { sessionId: location.state.username }
           );
           // stompClient.subscribe(
           //   "/topic/public",
@@ -83,7 +88,16 @@ export default function Home(props) {
   useEffect(() => {
     if (User.socketResponse) {
       let res = JSON.parse(User.socketResponse);
+      console.log("Socket response received :", res);
       if (res.type === "MESSAGE") {
+        loadNotifications();
+      }
+      if (res.type === "CHALLENGE_SEND") {
+        loadNotifications();
+        setChallenger({ user_id: res.user_id, username: res.username, notification_id: parseInt(res.content) });
+        setShowChallangeReceivedModalPopup(true);
+      }
+      if (res.type === "CHALLENGE_DECLINE") {
         loadNotifications();
       }
     }
@@ -168,6 +182,41 @@ export default function Home(props) {
       }
     });
   };
+  const onChallengeAccept = () => { };
+  const onChallengeDecline = () => {
+    let noti = challenger.notification_id;
+    let obj = {
+      notification_id: noti,
+      message: "",
+      user_id: User.user_id,
+      username: User.username,
+      IsRead: false,
+      type: "",
+      ref_id: challenger.user_id,
+      refname: challenger.username,
+    };
+    console.log("Input object", obj);
+    declineChallenge(obj).then(d => {
+      let res = d.data;
+      if (res.Status === 200) {
+        setTimeout(() => {
+          loadNotifications();
+        }, 1000);
+        setShowChallangeReceivedModalPopup(false);
+      }
+    });
+  };
+
+  const handleChallengeNotificationPress = (item) => {
+    console.log(item);
+    let timeDiff = new Date().getMilliseconds() - new Date(item.timestamp).getMilliseconds();
+    console.log(timeDiff);
+    if (timeDiff / (1000 * 60) <= 5) {
+      setChallenger({ user_id: item.ref_id, username: item.refname, notification_id: item.notification_id });
+      setShowChallangeReceivedModalPopup(true);
+      toggleSidebar();
+    }
+  };
 
   useEffect(() => {
     loadNotifications();
@@ -186,6 +235,18 @@ export default function Home(props) {
   }, [sidebarRef]);
   return (
     <>
+      {
+        showChallangeReceivedModalPopup ?
+          <ReceiveChallange
+            show={showChallangeReceivedModalPopup}
+            onClose={() => { setShowChallangeReceivedModalPopup(false); }}
+            sender={challenger}
+            onAccept={onChallengeAccept}
+            onDecline={onChallengeDecline}
+          />
+          :
+          null
+      }
       {showAddConnPopup ?
         <AddConnection onClose={() => setShowAddConnPopup(false)} show={showAddConnPopup} /> : null}
       <div className="connection-req-sidebar close" ref={sidebarRef}>
@@ -217,9 +278,14 @@ export default function Home(props) {
                     />
                   </div>
                 </li>
-              ) : item.type === "MESSAGE" ? (
-                <li>{item.message}</li>
-              ) : null;
+              ) :
+                (item.type === "MESSAGE") ?
+                  <li>{item.message}</li>
+                  :
+                  (item.type === "CHALLENGE") ?
+                    <li onClick={() => { handleChallengeNotificationPress(item); }}>{item.message}</li>
+                    :
+                    null;
             })}
           </ul>
         </div>
@@ -289,7 +355,7 @@ export default function Home(props) {
               />
             </div>
           </div>
-          {activeTab == "2" ? (
+          {activeTab === "2" ? (
             <PlayConnection
               referesh={refConnList}
               setRefreresh={() => setRefConnList(false)}

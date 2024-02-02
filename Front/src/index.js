@@ -7,6 +7,7 @@ import EnterOtp from './Page/enter-otp';
 import Home from './Page/Home';
 import { Provider } from 'react-redux';
 import store from './Store/store';
+import Game from './Page/game';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />
+  },
+  {
+    path: "/game",
+    element: <Game />
   }
 ]);
 

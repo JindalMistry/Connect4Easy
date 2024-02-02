@@ -4,7 +4,7 @@ import Button from '../Component/Button';
 import '../Css/conn-detail.css';
 import '../Css/receive-challange.css';
 
-export default function ReceiveChallange({ onClose, show, sender }) {
+export default function ReceiveChallange({ onClose, show, sender, onAccept, onDecline }) {
     return (
         <Modal
             type={"small-square"}
@@ -20,7 +20,7 @@ export default function ReceiveChallange({ onClose, show, sender }) {
             <div className='receive-challange-wrapper'>
                 <div className='conn-detail-list'>
                     <p className='conn-detail-header'>{"You have been challanged"}</p>
-                    <p className='accept-challange-para'>{"You have received a challange from Jindal_1305!"}</p>
+                    <p className='accept-challange-para'>{`You have received a challange from ${sender.username}!`}</p>
                     <ul>
                         <li><p>Winnings</p> <b>150M</b></li>
                         <li><p>Matches played</p> <b>251</b></li>
@@ -30,12 +30,12 @@ export default function ReceiveChallange({ onClose, show, sender }) {
                 <div className='receive-challange-btn-wrapper'>
                     <Button
                         label={"Decline"}
-                        onClick={() => { }}
+                        onClick={onDecline}
                         className={"receive-challange-play-btn decline"}
                     />
                     <Button
                         label={"Accept"}
-                        onClick={() => { }}
+                        onClick={onAccept}
                         className={"receive-challange-play-btn accept"}
                     />
                 </div>

@@ -1,5 +1,5 @@
 import axios from "axios";
-//const url = "http://localhost:8080/";
+// const url = "http://localhost:8080/";
 const url = "";
 
 export const getConnections = (username) => {
@@ -40,4 +40,19 @@ export const updateNotification = (para) => {
 export const getNotifications = (username) => {
     let apiUrl = url + 'user/getNotification/' + username;
     return axios.get(apiUrl);
+};
+
+export const sendChallenge = (obj) => {
+    let apiUrl = url + 'friends/sendChallenge';
+    return axios.post(apiUrl, obj);
+};
+
+export const acceptChallenge = (obj) => {
+    let apiUrl = url + 'friends/acceptChallenge';
+    return axios.post(apiUrl, obj);
+};
+
+export const declineChallenge = (obj) => {
+    let apiUrl = url + 'friends/declineChallenge';
+    return axios.post(apiUrl, obj);
 };

@@ -147,12 +147,101 @@
     }
 }
 
+/* Loading screen design */
+
+.loading-screen-abs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.loading-screen-wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    z-index: 3;
+}
+.loading-screen-section {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    background-image: url("../Images/nightbackgroud.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+}
+.loading-screen-icon {
+    height: 150px;
+    width: 150px;
+    border: 1px solid black;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5em;
+    margin-bottom: 0.5em;
+    background-color: white;
+}
+.loading-screen-name {
+    font-size: 2em;
+    color: white;
+    font-weight: 800;
+}
+.left-open {
+    left: 0;
+    transition: left 1s linear;
+}
+.left-close {
+    left: -50%;
+    transition: left 1s linear;
+}
+.right-open {
+    right: 0;
+    transition: right 1s linear;
+}
+.right-close {
+    right: -50%;
+    transition: right 1s linear;
+}
 @media only screen and (max-width: 600px) {
     .popup-cross {
         padding: 3% 2% 0 2%;
     }
     .small-square {
         width: 90%;
+    }
+    .loading-screen-wrapper {
+        flex-direction: column;
+    }
+    .loading-screen-section {
+        height: 50%;
+        width: 100%;
+    }
+    .left-open {
+        left: 0;
+        top: 0;
+        transition: top 1s linear;
+    }
+    .left-close {
+        left: 0;
+        top: -50%;
+        transition: top 1s linear;
+    }
+    .right-open {
+        left: 0;
+        top: 50%;
+        transition: top 1s linear;
+    }
+    .right-close {
+        left: 0;
+        top: 100%;
+        transition: top 1s linear;
     }
 }
 

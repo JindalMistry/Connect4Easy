@@ -3,10 +3,11 @@ import './Css/global.css';
 import './Css/enter-otp.css';
 import './Css/home.css';
 import Login from './Page/login-page';
-import EnterOtp from './Page/enter-otp';
+// import EnterOtp from './Page/enter-otp';
 // import { Client } from '@stomp/stompjs';
 // import SockJS from "sockjs-client";
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
+// import ReceiveChallange from './Popup/receive-challange';
 
 function App() {
   return (

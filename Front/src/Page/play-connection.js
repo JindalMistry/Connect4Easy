@@ -11,7 +11,6 @@ export default function PlayConnection({ referesh, setRefreresh }) {
   const dispatch = useDispatch();
   const [connections, setConnections] = useState([]);
   const [showConnDetailModalPopup, setShowConnDetailModalPopup] = useState(false);
-  const [showChallangeReceivedModalPopup, setShowChallangeReceivedModalPopup] = useState(false);
   const [selectedTile, setSelectedTile] = useState({});
 
   const loadConnections = () => {
@@ -83,16 +82,6 @@ export default function PlayConnection({ referesh, setRefreresh }) {
         />
         :
         null
-      }
-      {
-        showChallangeReceivedModalPopup ?
-          <ReceiveChallange
-            show={showChallangeReceivedModalPopup}
-            onClose={() => { setShowChallangeReceivedModalPopup(false); }}
-            sender={{}}
-          />
-          :
-          null
       }
       <div className="home-main">
         {connections.map((item, index) => {
