@@ -1,19 +1,19 @@
+
 .home-container {
     height: 100vh;
     width: 100vw;
-    background-color: #1f3540;
+    background-color: var(--bg-color);
 }
 .home-wrapper {
     height: 100%;
-    width: 92%;
-    margin: 0px 4%;
+    width: 100%;
     position: relative;
     background-color: inherit;
 }
 .home-header {
     font-size: 2em;
     font-weight: 800;
-    color: white;
+    color: var(--text-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,7 +23,7 @@
     z-index: 1;
 }
 .home-header span {
-    color: #4cc75e;
+    color: var(--accent);
 }
 .add-friend-button {
     width: 100%;
@@ -32,12 +32,13 @@
     justify-content: space-between;
     height: 10%;
     z-index: 2;
+    padding: 0% 4%;
 }
 .friend-request-icon {
     font-size: 2.5em;
     cursor: pointer;
     position: relative;
-    color: #4cc75e;
+    color: var(--button-primary);
     height: 100%;
     display: flex;
     align-items: center;
@@ -61,28 +62,29 @@
 }
 .plus-icon {
     display: none;
+    color: var(--button-primary);
 }
 
 .add-friend {
-    padding: 0.3em 1em;
-    color: white;
-    background: #26ffcb;
+    padding: 0.5em 2em;
+    color: var(--button-primary-text);
+    background: var(--button-primary);
     border-radius: 20px;
     border: none;
     cursor: pointer;
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: bold;
-    color: white;
-    border: 1px solid #397b9c;
 }
 .add-friend:hover {
-    color: black;
+    background-color: var(--button-primary-hover);
+    color: var(--button-primary-hover-text);
 }
 .home-body {
     width: 100%;
     display: flex;
     height: 15%;
     align-items: center;
+    padding: 0% 4%;
 }
 .main-btn-container {
     height: 50%;
@@ -90,15 +92,17 @@
 }
 .home-body-btn {
     padding: 0.4em 2.5em;
-    color: white;
-    background-color: #26ffcb;
-    border: 1px solid #397b9c;
+    color: var(--button-primary-text);
+    background-color: var(--button-primary);
+    border: none;
+    /* border: 1px solid #397b9c; */
     border-radius: 20px;
     font-size: 1em;
     font-weight: bold;
 }
 .home-body-btn:hover {
-    color: black;
+    background-color: var(--button-primary-hover);
+    color: var(--button-primary-hover-text);
 }
 .home-main {
     height: 75%;
@@ -109,23 +113,28 @@
     grid-gap: 30px;
     overflow: hidden;
     overflow-y: auto;
+    padding: 0% 4%;
 }
 .home-main .friend-tile {
-    border: 3px solid #397b9c;
+    border: 3px solid var(--button-secondary);
     border-radius: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     padding: 10% 0px;
-    background-color: #1a455a;
+    background-color: var(--popup-bg);
     cursor: pointer;
 }
 .home-main .friend-tile:hover {
-    background-color: #1f3540;
+    background-color: var(--button-secondary);
+    color: var(--button-secondary-text);
+}
+.home-main .friend-tile:hover.friend-tile b{
+    color: var(--button-secondary-text);
 }
 .friend-tile b {
-    color: white;
+    color: var(--popup-text);
     font-size: 1em;
     white-space: nowrap;
     overflow: hidden;
@@ -165,8 +174,9 @@
     height: 100%;
     z-index: 3;
     padding: 1%;
-    background-color: #1a455a;
+    background-color: var(--bg-color);
     transition: left 0.5s;
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);
 }
 .close {
     left: -100%;
@@ -180,7 +190,7 @@
     align-items: center;
     justify-content: space-between;
     height: 5%;
-    color: white;
+    color: var(--text-color);
 }
 .connection-req-header p {
     font-size: 1.5em;
@@ -207,8 +217,8 @@
 .connection-req-body li {
     text-wrap: wrap;
     padding: 1em 0px;
-    color: white;
-    border-bottom: 2px solid white;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--text-color);
 }
 .connection-req-body li div {
     display: flex;
@@ -220,8 +230,8 @@
     border-radius: 10px;
     cursor: pointer;
     margin: 0px 1%;
-    color: white;
-    background: #26ffcb;
+    color: var(--button-primary-text);
+    background: var(--button-primary);
     font-size: 1em;
     font-weight: 800;
 }
@@ -236,17 +246,64 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 1.5em;
-    background: #26ffcb;
+    color: var(--button-primary-text);
+    font-size: 1em;
+    background: var(--button-primary);
     font-weight: 800;
     border: none;
     border-radius: 10px;
     cursor: pointer;
 }
 .log-out-btn:hover {
-    color: black;
+    background-color: var(--button-primary-hover);
+    color: var(--button-primary-hover-text);
 }
+.connection-screen {
+    background-color: var(--popup-bg);
+    color: var(--popup-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.connection-screen div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.connection-screen div p:nth-child(1) { font-size: 2em; font-weight: 600;}
+.connection-screen div p:nth-child(2) { font-size: 1em; margin-top: 5%;}
+.connection-screen-loader { height: 30%; width: 30%; background: transparent;}
+.connection-loader {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .connection-loader:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 6px solid var(--button-primary);
+    border-top: 6px solid var(--bg-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    box-sizing: border-box;
+    transform-origin: 50% 50%;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 
 @media only screen and (max-width: 600px) {
     .home-header {

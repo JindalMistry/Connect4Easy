@@ -1,253 +1,193 @@
 /* Text box */
 .custom-textbox-wrapper {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 .custom-textbox-wrapper p {
-    font-size: medium;
-    font-weight: 600;
+  font-size: medium;
+  font-weight: 600;
 }
 .custom-textbox {
-    outline: none;
-    background: inherit;
+  outline: none;
+  background: inherit;
 }
 
 /* Button */
 .custom-btn {
-    height: 100%;
-    width: 100%;
-    text-align: center;
-    cursor: pointer;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+.button-loader {
+  position: relative;
+  overflow: hidden;
 }
 
+.button-loader:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 3px solid #fff;
+  border-top: 3px solid var(--bg-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 /* Modal popup */
 .popup {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    /* background: rgba(40, 67, 135, 0.7); */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  background-color: rgba(43, 43, 255, 0.3);
 }
 .large {
-    height: 80%;
-    width: 90%;
-    background-color: white;
-    overflow: hidden;
-    border-radius: 10px;
-    border: 4px solid rgba(12, 30, 75, 0.7);
+  height: 80%;
+  width: 90%;
+  background-color: white;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid var(--button-primary);
 }
 .mid {
-    height: 70%;
-    width: 80%;
-    background-color: white;
-    overflow: hidden;
-    border-radius: 10px;
-    border: 4px solid rgba(12, 30, 75, 0.7);
+  height: 70%;
+  width: 80%;
+  background-color: white;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid var(--button-primary);
 }
 .small {
-    height: 50%;
-    width: 70%;
-    background-color: white;
-    overflow: hidden;
-    border-radius: 10px;
-    border: 4px solid rgba(12, 30, 75, 0.7);
+  height: 50%;
+  width: 70%;
+  background-color: white;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid var(--button-primary);
 }
 .x-small {
-    height: 30%;
-    width: 50%;
-    background-color: white;
-    overflow: hidden;
-    border-radius: 10px;
-    border: 4px solid rgba(12, 30, 75, 0.7);
+  height: 30%;
+  width: 50%;
+  background-color: white;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid var(--button-primary);
 }
 .small-square {
-    height: 50%;
-    width: 50%;
-    background-color: white;
-    overflow: hidden;
-    border-radius: 10px;
-    border: 4px solid rgba(12, 30, 75, 0.7);
+  height: 50%;
+  width: 50%;
+  background-color: white;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid var(--button-primary);
 }
 .modalwrapclose {
-    visibility: hidden;
-    opacity: 0;
+  visibility: hidden;
+  opacity: 0;
 }
 .modalwrapopen {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
 .modalopen {
-    visibility: visible;
-    animation-name: show-popup;
-    animation-duration: 0.2s;
+  visibility: visible;
+  animation-name: show-popup;
+  animation-duration: 0.2s;
 }
 .modalclose {
-    animation-name: hide-popup;
-    animation-duration: 0.3s;
-    visibility: hidden;
+  animation-name: hide-popup;
+  animation-duration: 0.3s;
+  visibility: hidden;
 }
 .popup-cross {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1% 2% 0 2%;
-    background: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1% 2% 0 2%;
+  background: inherit;
 }
 .popup-cross p {
-    font-size: 1.5em;
-    font-weight: 800;
+  font-size: 1.5em;
+  font-weight: 800;
 }
 .popup-cross span {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2em;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  cursor: pointer;
 }
 @keyframes show-popup {
-    0% {
-        transform: scale(0.4);
-        opacity: 0;
-    }
-    45% {
-        transform: scale(0.8);
-        opacity: 1;
-    }
-    80% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  45% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes hide-popup {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-        visibility: visible;
-    }
-    45% {
-        transform: scale(0.6);
-        opacity: 1;
-        visibility: visible;
-    }
-    80% {
-        transform: scale(0.2);
-        opacity: 1;
-        visibility: visible;
-    }
-    100% {
-        transform: scale(0);
-        opacity: 0;
-        visibility: hidden;
-    }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+  }
+  45% {
+    transform: scale(0.6);
+    opacity: 1;
+    visibility: visible;
+  }
+  80% {
+    transform: scale(0.2);
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
-/* Loading screen design */
-
-.loading-screen-abs {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-}
-
-.loading-screen-wrapper {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    z-index: 3;
-}
-.loading-screen-section {
-    height: 100%;
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    background-image: url("../Images/nightbackgroud.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: absolute;
-}
-.loading-screen-icon {
-    height: 150px;
-    width: 150px;
-    border: 1px solid black;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 5em;
-    margin-bottom: 0.5em;
-    background-color: white;
-}
-.loading-screen-name {
-    font-size: 2em;
-    color: white;
-    font-weight: 800;
-}
-.left-open {
-    left: 0;
-    transition: left 1s linear;
-}
-.left-close {
-    left: -50%;
-    transition: left 1s linear;
-}
-.right-open {
-    right: 0;
-    transition: right 1s linear;
-}
-.right-close {
-    right: -50%;
-    transition: right 1s linear;
-}
 @media only screen and (max-width: 600px) {
-    .popup-cross {
-        padding: 3% 2% 0 2%;
-    }
-    .small-square {
-        width: 90%;
-    }
-    .loading-screen-wrapper {
-        flex-direction: column;
-    }
-    .loading-screen-section {
-        height: 50%;
-        width: 100%;
-    }
-    .left-open {
-        left: 0;
-        top: 0;
-        transition: top 1s linear;
-    }
-    .left-close {
-        left: 0;
-        top: -50%;
-        transition: top 1s linear;
-    }
-    .right-open {
-        left: 0;
-        top: 50%;
-        transition: top 1s linear;
-    }
-    .right-close {
-        left: 0;
-        top: 100%;
-        transition: top 1s linear;
-    }
+  .popup-cross {
+    padding: 3% 2% 0 2%;
+  }
+  .small-square {
+    width: 90%;
+  }
+  
 }
 
 @media only screen and (max-width: 400px) {
-    .small-square {
-        width: 90%;
-        height: 60%;
-    }
+  .small-square {
+    width: 90%;
+    height: 60%;
+  }
 }

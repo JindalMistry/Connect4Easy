@@ -16,8 +16,10 @@ export default function Modal({ type, children, label, OnClose, className, show,
         if (modalRef) {
             if (modalRef.current && closeOutsideClick === true) {
                 window.addEventListener('mousedown', (e) => {
-                    if (modalRef.current && !modalRef.current.contains(e.target)) {
-                        OnClose();
+                    if (modalRef.current) {
+                        if(!modalRef.current.contains(e.target)){
+                            OnClose();
+                        }
                     }
                 });
             }

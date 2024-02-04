@@ -12,7 +12,7 @@ import Game from './Page/game';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />
+    element: <App/>
   },
   {
     path: "/otp",

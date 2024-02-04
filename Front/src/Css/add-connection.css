@@ -1,11 +1,11 @@
 .add-conn-modal {
-    background-color: #1f3540;
-    color: white;
+    background-color: var(--popup-bg);
+    color: var(--text-color);
 }
 .add-conn-wrapper {
     height: 100%;
     width: 100%;
-    background-color: #1f3540;
+    background-color: var(--popup-bg);
 }
 .header-add-conn {
     width: 100%;
@@ -22,16 +22,15 @@
     width: 15%;
 }
 .conn-search-text {
-    border: none;
-    background-color: #397b9c;
+    border: 1px solid var(--text-color);
     border-radius: 10px;
     font-size: 1em;
     padding: 1% 0%;
-    color: white;
+    color: var(--text-color);
     padding-left: 1%;
 }
 .conn-search-text::placeholder {
-    color: white;
+    color: var(--text-color);
     font-size: 1em;
     font-style: italic;
     font-weight: normal;
@@ -39,10 +38,10 @@
 }
 .conn-search-btn {
     padding: 0.4em 3em;
-    color: white;
+    color: var(--button-primary-text);
     font-size: 1em;
     font-weight: 600;
-    background: #26ffcb;
+    background: var(--button-primary);
     border-radius: 10px;
     border: none;
     cursor: pointer;
@@ -51,7 +50,8 @@
     justify-content: center;
 }
 .conn-search-btn:hover {
-    color: black;
+    background-color: var(--button-primary-hover);
+    color: var(--button-primary-hover-text);
 }
 .conn-list {
     height: 80%;
@@ -69,21 +69,22 @@
     align-items: center;
     justify-content: space-between;
     padding: 1% 0%;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--text-color);
     font-weight: 600;
     font-size: 1em;
 }
 .conn-list-btn {
     padding: 0.5em 2em;
-    color: white;
-    background: #26ffcb;
+    color: var(--button-secondary-text);
+    background: var(--button-secondary);
     border-radius: 10px;
     border: none;
     cursor: pointer;
     font-weight: 600;
 }
 .conn-list-btn:hover {
-    color: black;
+    background-color: var(--button-secondary-hover);
+    color: var(--button-secondary-hover-text);
 }
 
 @media only screen and (max-width: 600px) {

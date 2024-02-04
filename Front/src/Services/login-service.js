@@ -1,6 +1,7 @@
 import axios from "axios";
-const url = "http://localhost:8080/";
+// const url = "http://localhost:8080/";
 // const url = "http://192.168.100.43:8080/";
+const url = "http://192.168.1.6:8080/";
 
 export const register = (data) => {
     let apiUrl = url + "auth/register";

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import Button from "../Component/Button";
@@ -8,10 +8,12 @@ import AddConnection from "../Popup/add-connection";
 import { useDispatch, useSelector } from "react-redux";
 import { UserInfo, setSocketResponse } from "../Store/authSlice";
 import {
+  acceptChallenge,
   acceptConnection,
   declineChallenge,
   getNotifications,
   pullNotification,
+  startGame,
 } from "../Services/conn-service";
 import {
   ConnectInfo,
@@ -22,11 +24,15 @@ import {
 import { logout } from "../Services/login-service";
 import LoadingScreen from "../Component/LoadingScreen";
 import ReceiveChallange from "../Popup/receive-challange";
+import ConnectionScreen from "../Popup/connecting-modal";
+import AcceptChallenge from "../Popup/accept-challenge";
 
-const SOCKET_URL = "ws://localhost:8080/ws";
-const SOCKJS_URL = "http://localhost:8080/ws";
+// const SOCKET_URL = "ws://localhost:8080/ws";
+// const SOCKJS_URL = "http://localhost:8080/ws";
 // const SOCKET_URL = "ws://192.168.100.43:8080/ws";
 // const SOCKJS_URL = "http://192.168.100.43:8080/ws";
+const SOCKET_URL = "ws://192.168.1.6:8080/ws";
+const SOCKJS_URL = "http://192.168.1.6:8080/ws";
 let stompClient = null;
 
 export default function Home(props) {
@@ -35,22 +41,30 @@ export default function Home(props) {
   const Connector = useSelector(ConnectInfo);
   const dispatch = useDispatch();
   const sidebarRef = useRef();
+  const navigate = useNavigate();
 
   const [showAddConnPopup, setShowAddConnPopup] = useState(false);
   const [activeTab, setActiveTab] = useState("2");
   const [notiData, setNotiData] = useState([]);
   const [refConnList, setRefConnList] = useState(false);
-  const [showChallangeReceivedModalPopup, setShowChallangeReceivedModalPopup] = useState(false);
+  const [showChallangeReceivedModalPopup, setShowChallangeReceivedModalPopup] =
+    useState(false);
+  const [showConnectionModalPopup, setShowConnectionModalPopup] =
+    useState(false);
+  const [acceptChallengeModalPopup, setAcceptChallengeModalPopup] =
+    useState(false);
   const [challenger, setChallenger] = useState({});
+  const [gameId, setGameId] = useState(null);
 
   useEffect(() => {
     if (stompClient === null) {
+      console.warn("Connection established again!");
       stompClient = new Client({
         brokerURL: SOCKET_URL,
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
-        connectHeaders: { sessionId: location.state.username }
+        connectHeaders: { sessionId: location.state.username },
       });
       stompClient.webSocketFactory = function () {
         return new SockJS(SOCKJS_URL);
@@ -94,11 +108,36 @@ export default function Home(props) {
       }
       if (res.type === "CHALLENGE_SEND") {
         loadNotifications();
-        setChallenger({ user_id: res.user_id, username: res.username, notification_id: parseInt(res.content) });
+        setChallenger({
+          user_id: res.user_id,
+          username: res.username,
+          notification_id: parseInt(res.content),
+        });
         setShowChallangeReceivedModalPopup(true);
       }
       if (res.type === "CHALLENGE_DECLINE") {
         loadNotifications();
+      }
+      if (res.type === "CHALLENGE_ACCEPT") {
+        setChallenger({
+          user_id: res.user_id,
+          username: res.username,
+        });
+        setGameId(parseInt(res.content));
+        setAcceptChallengeModalPopup(true);
+      }
+      if (res.type === "START_GAME") {
+        navigate("/game", {
+          state: {
+            game_id: gameId,
+            ref_id: challenger.user_id,
+            ref_name: challenger.username,
+            player: 2,
+          },
+        });
+      }
+      if (res.type === "DO_NOT_START") {
+        setShowConnectionModalPopup(false);
       }
     }
   }, [User.socketResponse]);
@@ -167,22 +206,44 @@ export default function Home(props) {
           });
         }
       })
-      .catch((ex) => { });
+      .catch((ex) => {});
   };
   const logoutProcess = () => {
-    logout(User.username).then(res => {
-
-    }).catch(ex => {
-      let res = ex.response;
-      if (res.status === 403) {
-        alert('You are not authorized user!');
-      }
-      else if (res.status === 500) {
-        alert(res.data.message);
-      }
-    });
+    logout(User.username)
+      .then((res) => {})
+      .catch((ex) => {
+        let res = ex.response;
+        if (res.status === 403) {
+          alert("You are not authorized user!");
+        } else if (res.status === 500) {
+          alert(res.data.message);
+        }
+      });
   };
-  const onChallengeAccept = () => { };
+  const onChallengeAccept = () => {
+    let obj = {
+      notification_id: challenger.notification_id,
+      user_id: User.user_id,
+      username: User.username,
+      ref_id: challenger.user_id,
+      refname: challenger.username,
+    };
+    console.log("Input object at accept challenge : ", obj);
+    acceptChallenge(obj)
+      .then((d) => {
+        let res = d.data;
+        if (res.Status === 200) {
+          setShowChallangeReceivedModalPopup(false);
+          if (res.Data) {
+            setGameId(res.Data.game_id);
+            setShowConnectionModalPopup(true);
+          }
+        }
+      })
+      .catch((ex) => {
+        console.log("Exception found 200 : ", ex);
+      });
+  };
   const onChallengeDecline = () => {
     let noti = challenger.notification_id;
     let obj = {
@@ -196,7 +257,7 @@ export default function Home(props) {
       refname: challenger.username,
     };
     console.log("Input object", obj);
-    declineChallenge(obj).then(d => {
+    declineChallenge(obj).then((d) => {
       let res = d.data;
       if (res.Status === 200) {
         setTimeout(() => {
@@ -207,13 +268,56 @@ export default function Home(props) {
     });
   };
 
+  const onStartGame = () => {
+    startGame(challenger.username, "accept")
+      .then((d) => {
+        let res = d.data;
+        if (res.Status === 200) {
+          setAcceptChallengeModalPopup(false);
+          navigate("/game", {
+            state: {
+              game_id: gameId,
+              ref_id: challenger.user_id,
+              ref_name: challenger.username,
+              player: 1,
+            },
+          });
+        }
+      })
+      .catch((err) => {
+        console.log("Error: " + err);
+      });
+  };
+  const onCancelGameStart = () => {
+    startGame(challenger.username, "decline")
+      .then((d) => {
+        let res = d.data;
+        if (res.Status === 200) {
+          setAcceptChallengeModalPopup(false);
+        } else {
+          alert(res.Message);
+        }
+      })
+      .catch((err) => {
+        console.log("Error: " + err);
+      });
+  };
   const handleChallengeNotificationPress = (item) => {
     console.log(item);
-    let timeDiff = new Date().getMilliseconds() - new Date(item.timestamp).getMilliseconds();
+    let timeDiff =
+      new Date().getMilliseconds() - new Date(item.timestamp).getMilliseconds();
     console.log(timeDiff);
     if (timeDiff / (1000 * 60) <= 5) {
-      setChallenger({ user_id: item.ref_id, username: item.refname, notification_id: item.notification_id });
-      setShowChallangeReceivedModalPopup(true);
+      setChallenger({
+        user_id: item.ref_id,
+        username: item.refname,
+        notification_id: item.notification_id,
+      });
+      if (item.type === "CHALLENGE_ACCEPT") {
+        setAcceptChallengeModalPopup(true);
+      } else if (item.type === "CHALLENGE_REQUEST") {
+        setShowChallangeReceivedModalPopup(true);
+      }
       toggleSidebar();
     }
   };
@@ -225,9 +329,10 @@ export default function Home(props) {
   useEffect(() => {
     if (sidebarRef) {
       if (sidebarRef.current) {
-        window.addEventListener('mousedown', (e) => {
-          if (!sidebarRef.current.contains(e.target)) {
-            sidebarRef.current.className = "connection-req-sidebar close";
+        window.addEventListener("mousedown", (e) => {
+          if (sidebarRef?.current) {
+            if (!sidebarRef.current.contains(e.target))
+              sidebarRef.current.className = "connection-req-sidebar close";
           }
         });
       }
@@ -235,20 +340,37 @@ export default function Home(props) {
   }, [sidebarRef]);
   return (
     <>
-      {
-        showChallangeReceivedModalPopup ?
-          <ReceiveChallange
-            show={showChallangeReceivedModalPopup}
-            onClose={() => { setShowChallangeReceivedModalPopup(false); }}
-            sender={challenger}
-            onAccept={onChallengeAccept}
-            onDecline={onChallengeDecline}
-          />
-          :
-          null
-      }
-      {showAddConnPopup ?
-        <AddConnection onClose={() => setShowAddConnPopup(false)} show={showAddConnPopup} /> : null}
+      {acceptChallengeModalPopup ? (
+        <AcceptChallenge
+          show={acceptChallengeModalPopup}
+          onClose={() => {
+            setAcceptChallengeModalPopup(false);
+          }}
+          sender={challenger}
+          onAccept={onStartGame}
+          onDecline={onCancelGameStart}
+        />
+      ) : null}
+      {showConnectionModalPopup ? (
+        <ConnectionScreen show={showConnectionModalPopup} conn={challenger} />
+      ) : null}
+      {showChallangeReceivedModalPopup ? (
+        <ReceiveChallange
+          show={showChallangeReceivedModalPopup}
+          onClose={() => {
+            setShowChallangeReceivedModalPopup(false);
+          }}
+          sender={challenger}
+          onAccept={onChallengeAccept}
+          onDecline={onChallengeDecline}
+        />
+      ) : null}
+      {showAddConnPopup ? (
+        <AddConnection
+          onClose={() => setShowAddConnPopup(false)}
+          show={showAddConnPopup}
+        />
+      ) : null}
       <div className="connection-req-sidebar close" ref={sidebarRef}>
         <div className="connection-req-header">
           <p>Notification</p>
@@ -278,14 +400,25 @@ export default function Home(props) {
                     />
                   </div>
                 </li>
-              ) :
-                (item.type === "MESSAGE") ?
-                  <li>{item.message}</li>
-                  :
-                  (item.type === "CHALLENGE") ?
-                    <li onClick={() => { handleChallengeNotificationPress(item); }}>{item.message}</li>
-                    :
-                    null;
+              ) : item.type === "MESSAGE" ? (
+                <li>{item.message}</li>
+              ) : item.type === "CHALLENGE_REQUEST" ? (
+                <li
+                  onClick={() => {
+                    handleChallengeNotificationPress(item);
+                  }}
+                >
+                  {item.message}
+                </li>
+              ) : item.type === "CHALLENGE_ACCEPT" ? (
+                <li
+                  onClick={() => {
+                    handleChallengeNotificationPress(item);
+                  }}
+                >
+                  {item.message}
+                </li>
+              ) : null;
             })}
           </ul>
         </div>

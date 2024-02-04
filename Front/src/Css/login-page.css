@@ -2,14 +2,14 @@
     height: 100vh;
     width: 100%;
     border: 2px solid black;
-    background-color: #0F1B21;
+    background-color: var(--bg-color);
 }
 .login-container {
     height: 500px;
     width: 400px;
-    border: 2px solid #0F1B21;
+    border: 2px solid var(--button-primary);
     border-radius: 20px;
-    background-color: #1F3540;
+    background-color: var(--popup-bg);
     overflow: hidden;
     overflow-y: auto;
 }
@@ -19,34 +19,36 @@
     padding: 10% 0% 6% 0%;
     width: 100%;
     text-align: center;
-    color: #26FFCB;
+    color: var(--popup-text);
 }
 .login-footer {
     font-size: 1em;
     width: 100%;
     text-align: center;
-    color: #26FFCB;
+    color: var(--popup-text);
 }
 .login-footer b {
     cursor: pointer;
-    color: #FFCC26;
+    color: var(--button-primary);
+}
+.login-footer b:hover {
+    color: var(--button-primary-hover);
 }
 .login-container .textbox-container {
     width: 100%;
     padding: 0% 8%;
     margin-bottom: 10%;
-    color: #26FFCB;
 }
 .login-text {
     padding: 3% 0%;
     border: none;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid var(--popup-text);
     font-size: medium;
     font-weight: normal;
-    color: white;
+    color: var(--popup-text);
 }
-.login-text:focus {
-    background-color: inherit;
+.login-text::after {
+    background-color: white;
 }
 .login-container .btn-wrapper {
     width: 100%;
@@ -54,17 +56,18 @@
     border-radius: 20px;
 }
 .login-btn {
-    color: #26FFCB;
-    font-weight: bold;
-    font-size: 2em;
-    background: white;
+    color: var(--button-primary-text);
+    font-weight: 800;
+    font-size: 1.5em;
     border-radius: 10px;
-    padding: 1% 0px;
+    padding: 2.5% 0px;
     border: none;
+    background-color: var(--button-primary);
+    transition: background-color 0.3s, color 0.3s;
 }
 .login-btn:hover {
-    background: #26FFCB;
-    color: #FFCC26;
+    background-color: var(--button-primary-hover);
+    color: var(--button-primary-hover-text);
 }
 
 @media only screen and (max-width: 600px) {

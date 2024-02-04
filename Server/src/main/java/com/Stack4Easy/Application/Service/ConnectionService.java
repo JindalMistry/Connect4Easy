@@ -177,7 +177,7 @@ public class ConnectionService {
                             connections.getRef_id(),
                             connections.getReference_name(),
                             false,
-                            "CHALLENGE",
+                            "CHALLENGE_REQUEST",
                             connections.getUser_id(),
                             connections.getUsername()
                     )
@@ -216,6 +216,8 @@ public class ConnectionService {
                         res.setMessage("Player is not online!");
                     }
                     else{
+                        user.setStatus(UserStatus.INGAME);
+                        userRepository.save(user);
                         userNotificationService.pushNotification(
                                 new UserNotificationDto(
                                         0L,
@@ -223,7 +225,7 @@ public class ConnectionService {
                                         connDto.getRef_id(),
                                         connDto.getRefname(),
                                         false,
-                                        "CHALLENGE",
+                                        "CHALLENGE_ACCEPT",
                                         connDto.getUser_id(),
                                         connDto.getUsername()
                                 )
@@ -318,5 +320,39 @@ public class ConnectionService {
                 "Challenge request declined.",
                 200
         );
+    }
+
+    public ResponseModel startGame(String username, String type) {
+        ResponseModel res = new ResponseModel();
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()){
+            if(user.get().getStatus() == UserStatus.ONLINE){
+                User change = user.get();
+                change.setStatus(UserStatus.INGAME);
+                userRepository.save(change);
+                messagingTemplate.convertAndSendToUser(
+                        username,
+                        "/queue/friends",
+                        ConnNotification.builder()
+                                .user_id(0)
+                                .type(type.matches("accept") ? "START_GAME" : "DO_NOT_START")
+                                .build()
+                );
+                res.setStatus(200);
+            }
+            else if(user.get().getStatus() == UserStatus.INGAME){
+                res.setStatus(500);
+                res.setMessage("User is in game, please try again later!");
+            }
+            else {
+                res.setStatus(500);
+                res.setMessage("User is offline, please try again later!");
+            }
+        }
+        else{
+            res.setStatus(500);
+            res.setMessage("User not found!");
+        }
+        return res;
     }
 }

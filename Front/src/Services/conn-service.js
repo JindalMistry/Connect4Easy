@@ -56,3 +56,8 @@ export const declineChallenge = (obj) => {
     let apiUrl = url + 'friends/declineChallenge';
     return axios.post(apiUrl, obj);
 };
+
+export const startGame = (username, type) => {
+    let apiUrl = url + "friends/manage-game-status/" + username + "/" + type;
+    return axios.get(apiUrl);
+}

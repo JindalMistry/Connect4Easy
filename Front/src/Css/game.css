@@ -1,74 +1,188 @@
+
 .game-wrapper {
-    height: 100vh;
-    width: 100%;
-    padding: 5% 35%;
-    background-color: #1f3540;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--bg-color);
 }
+.game-list-wrapper {
+  height: 95vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .game-list {
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(6, auto);
-    grid-auto-rows: calc(99% / 7);
-    gap: 10px;
-    height: 90%;
+  list-style: none;
+  height: 90%;
+  width: 500px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 10px;
 }
 .game-tile {
-    border: 1px solid black;
-    background-color: #1a455a;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-    font-size: 2em;
+  border: 1.5px solid var(--button-primary);
+  background-color: var(--popup-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  font-size: 2em;
 }
 .game-tile:hover {
-    background-color: #5699bb;
+  background-color: var(--bg-color);
 }
 
 .game-heading {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  /* position: absolute;
+      top: 0;
+      left: 0; */
+  width: 100%;
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .game-heading-tile {
-    display: flex;
-    align-items: center;
-    margin: 0 15px;
+  display: flex;
+  align-items: center;
+  margin: 0 15px;
 }
 .game-heading-tile div {
-    height: 50px;
-    width: 50px;
-    background-color: #1a455a;
-    color: white;
-    border: 1px solid black;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 50px;
+  width: 50px;
+  background-color: var(--popup-bg);
+  color: var(--popup-text);
+  border: 1.5px solid var(--button-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .left-tile div {
-    margin-right: 15px;
+  margin-right: 15px;
 }
 .right-tile div {
-    margin-left: 15px;
+  margin-left: 15px;
 }
 
 .game-heading-tile p {
-    font-size: 1em;
-    font-weight: 600;
-    color: white;
+  font-size: 1.5em;
+  font-weight: 600;
+  color: var(--text-color);
 }
 .game-heading-main {
-    font-size: 1.5em;
-    color: white;
-    text-transform: uppercase;
+  font-size: 1.5em;
+  color: var(--text-color);
+  font-weight: 800;
 }
-@media screen and (max-width: 1200px) {
+.active {
+  background-color: var(--bg-color);
+}
+
+/* Loading screen design */
+
+.loading-screen-abs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+.loading-screen-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  z-index: 3;
+}
+.loading-screen-section {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-color);
+  border: 1px solid var(--button-secondary);
+  /* background-image: url("../Images/nightbackgroud.jpg"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  pointer-events: all;
+}
+.loading-screen-icon {
+  height: 150px;
+  width: 150px;
+  border: 1px solid black;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5em;
+  margin-bottom: 0.5em;
+  background-color: white;
+}
+.loading-screen-name {
+  font-size: 2em;
+  color: var(--text-color);
+  font-weight: 800;
+}
+.left-open {
+  left: 0;
+  transition: left 3s linear;
+}
+.left-close {
+  left: -50%;
+  transition: left 3s linear;
+}
+.right-open {
+  right: 0;
+  transition: right 3s linear;
+}
+.right-close {
+  right: -50%;
+  transition: right 3s linear;
+}
+.loading-screen-btn-right {
+  height: 10%;
+  width: 35%;
+  margin-top: 15%;
+}
+.loading-screen-btn-left {
+  height: 10%;
+  width: 35%;
+  margin-top: 15%;
+}
+.loading-screen-btn-right .main{
+  border-radius: 10px;
+  background-color: var(--button-secondary);
+  color: var(--button-secondary-text);
+  cursor: pointer;
+  border: none;
+  font-size: 1.5em;
+}
+.loading-screen-btn-left .main{
+  border-radius: 10px;
+  background-color: var(--button-primary);
+  color: var(--button-primary-text);
+  font-size: 1.5em;
+  cursor: pointer;
+  border: none;
+}
+.main:hover {
+  background-color: var(--button-primary-hover);
+  color: var(--button-primary-hover-text);
+}
+.w45 {width: 45% !important;}
+.rematch-timer { width: 30%; display: flex; align-items: center; justify-content: center; font-weight: 800;}
+/* @media screen and (max-width: 1200px) {
     .game-wrapper {
         padding: 5% 30%;
     }
@@ -115,4 +229,82 @@
     .game-list {
         height: 90%;
     }
+} */
+@media screen and (max-width: 600px) and (max-height: 700px) {
+  .game-list {
+    height: 70%;
+    width: 90%;
+  }
+  .game-heading-tile p {
+    font-size: 1em;
+  }
+  .game-heading-main {
+    font-size: 1em;
+  }
+  .loading-screen-wrapper {
+    flex-direction: column;
+  }
+  .loading-screen-section {
+    height: 50%;
+    width: 100%;
+  }
+  .left-open {
+    left: 0;
+    top: 0;
+    transition: top 3s linear;
+  }
+  .left-close {
+    left: 0;
+    top: -50%;
+    transition: top 3s linear;
+  }
+  .right-open {
+    left: 0;
+    top: 50%;
+    transition: top 3s linear;
+  }
+  .right-close {
+    left: 0;
+    top: 100%;
+    transition: top 3s linear;
+  }
+}
+@media screen and (max-width: 600px) and (min-height: 700px) {
+  .game-list {
+    height: 60%;
+    width: 90%;
+  }
+  .game-heading-tile p {
+    font-size: 1em;
+  }
+  .game-heading-main {
+    font-size: 1em;
+  }
+  .loading-screen-wrapper {
+    flex-direction: column;
+  }
+  .loading-screen-section {
+    height: 50%;
+    width: 100%;
+  }
+  .left-open {
+    left: 0;
+    top: 0;
+    transition: top 3s linear;
+  }
+  .left-close {
+    left: 0;
+    top: -50%;
+    transition: top 3s linear;
+  }
+  .right-open {
+    left: 0;
+    top: 50%;
+    transition: top 3s linear;
+  }
+  .right-close {
+    left: 0;
+    top: 100%;
+    transition: top 3s linear;
+  }
 }
