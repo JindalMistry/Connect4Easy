@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { UserInfo, activeStompClient, setUser } from "../Store/authSlice";
 import axios from "axios";
 import LoadingScreen from "../Component/LoadingScreen";
+import { toastAlert } from "../Component/ToasteMessage";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -66,8 +67,8 @@ export default function Login() {
               axios.interceptors.request.use(function (config) {
                 const token = response.Data.token;
                 // config.baseURL = 'http://localhost:8080/';
-                // config.baseURL = 'http://192.168.100.43:8080/';
-                config.baseURL = "http://192.168.1.6:8080/";
+                config.baseURL = 'http://192.168.100.43:8080/';
+                // config.baseURL = "http://192.168.1.6:8080/";
                 config.headers.Authorization = `Bearer ${token}`;
                 return config;
               });
@@ -137,7 +138,9 @@ export default function Login() {
             <Button
               label={status == "login" ? "Sign in" : "Sign Up"}
               className={"login-btn"}
-              onClick={onLoginPress}
+              onClick={() => {
+                onLoginPress();
+              }}
               showLoader={IsLoading}
             />
           </div>

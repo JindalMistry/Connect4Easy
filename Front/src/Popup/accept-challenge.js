@@ -4,7 +4,9 @@ import Button from '../Component/Button';
 import '../Css/conn-detail.css';
 import '../Css/receive-challange.css';
 
-export default function AcceptChallenge({ onClose, show, sender, onAccept, onDecline }) {
+export default function AcceptChallenge({
+    onClose, show, sender, onPlay, onLater, showLaterLoader, showPlayLoader
+}) {
     return (
         <Modal
             type={"small-square"}
@@ -19,27 +21,29 @@ export default function AcceptChallenge({ onClose, show, sender, onAccept, onDec
         >
             <div className='accept-challange-wrapper'>
                 <div className='conn-detail-list'>
-                <p 
-                    style={{
-                        width: "100%",
-                        fontSize: "2em",
-                        textAlign: "center",
-                        color: "black",
-                        fontWeight: "800",
-                        padding: "0% 15%"
-                    }}
-                >{`Challenge has been accepted!`}</p>
+                    <p
+                        style={{
+                            width: "100%",
+                            fontSize: "2em",
+                            textAlign: "center",
+                            color: "black",
+                            fontWeight: "800",
+                            padding: "0% 15%"
+                        }}
+                    >{`Challenge has been accepted!`}</p>
                 </div>
                 <div className='receive-challange-btn-wrapper'>
                     <Button
-                        label={"DECLINE"}
-                        onClick={onDecline}
+                        label={"LATER"}
+                        onClick={onLater}
                         className={"receive-challange-play-btn decline"}
+                        showLoader={showLaterLoader}
                     />
                     <Button
                         label={"PLAY"}
-                        onClick={onAccept}
+                        onClick={onPlay}
                         className={"receive-challange-play-btn accept"}
+                        showLoader={showPlayLoader}
                     />
                 </div>
             </div>

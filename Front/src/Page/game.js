@@ -108,7 +108,9 @@ export default function Game() {
           setIsLoading(true);
           Allow = true;
           setShowOptBtn(true);
-          alert("Congratulations, " + opp + " have won the game!");
+          setTimeout(() => {
+            alert("Congratulations, " + opp + " have won the game!");
+          }, 50);
         }
         setMove(User.user_id);
       }
@@ -149,6 +151,10 @@ export default function Game() {
           setShowOptBtn(false);
         }, 2000);
       }
+      if (res.type === "REMATCH_DECLINE") {
+        alert("Your opponent has left the game!");
+        onHome();
+      }
     }
   }, [User.socketResponse]);
 
@@ -169,7 +175,7 @@ export default function Game() {
             console.log("Icons assigned successfully");
             setTimeout(() => {
               setIsLoading(false);
-              Allow = false
+              Allow = false;
             }, 2000);
           } else {
             console.log("Assign icon error:");
@@ -275,40 +281,42 @@ export default function Game() {
   };
 
   const validate = (row, col) => {
-    if (move !== User.user_id) {
-      alert("Oops! it is your opponent's move.");
-      return false;
-    } else if (board[row][col] !== 0) {
-      // User.user_id == detail.player_one
-      //   ? detail.player_one_name
-      //   : detail.player_two_name +
-      //     ", Oops! Can’t place your move there. Make sure the block you want to place your move is Empty.";
-      let msg =
-        User.username +
-        ", Oops! Can’t place your move there. Make sure the block you want to place your move is Empty.";
-      alert(msg);
-      return false;
-    } else if (row + 1 <= 6 && board[row + 1][col] === 0) {
-      let msg =
-        User.username +
-        ", Oops! Can’t place your move there. Make sure the blocks beneath are selected first.";
-      alert(msg);
-      return false;
+    try {
+      if (move !== User.user_id) {
+        alert("Oops! it is your opponent's move.");
+        return false;
+      } else if (board[row][col] !== 0) {
+        // User.user_id == detail.player_one
+        //   ? detail.player_one_name
+        //   : detail.player_two_name +
+        //     ", Oops! Can’t place your move there. Make sure the block you want to place your move is Empty.";
+        let msg =
+          User.username +
+          ", Oops! Can’t place your move there. Make sure the block you want to place your move is Empty.";
+        alert(msg);
+        return false;
+      } else if (row + 1 <= 6 && board[row + 1][col] === 0) {
+        let msg =
+          User.username +
+          ", Oops! Can’t place your move there. Make sure the blocks beneath are selected first.";
+        alert(msg);
+        return false;
+      }
+    }
+    catch (ex) {
+      console.log("validate exception.", ex);
     }
     return true;
   };
 
-  const onBoardPress = (i, row, col, check) => {
-    if (i) {
-      col = i % 6;
-      row = Math.floor(i / 6);
-    }
+  const onBoardPress = (i) => {
+
+    let col = i % 6;
+    let row = Math.floor(i / 6);
 
     let isValid = true;
 
-    if (check === true) {
-      isValid = validate(row, col);
-    }
+    isValid = validate(row, col);
 
     if (isValid) {
       let tempData = JSON.parse(JSON.stringify(board));
@@ -367,7 +375,8 @@ export default function Game() {
   };
 
   const onHome = () => {
-    manageExitGame(User.username)
+    let opp = detail.player_one == User.user_id ? detail.player_two_name : detail.player_one_name;
+    manageExitGame(User.username, opp)
       .then((d) => {
         let res = d.data;
         if (res.Status === 200) {
@@ -515,12 +524,11 @@ export default function Game() {
             return (
               <li
                 key={index}
-                className={`game-tile ${
-                  index === selectedTile ? " active" : ""
-                }`}
+                className={`game-tile ${index === selectedTile ? " active" : ""
+                  }`}
                 onClick={() => {
                   if (!block) {
-                    onBoardPress(index, null, null, true);
+                    onBoardPress(index);
                   } else {
                     alert("Please wait for a while...");
                   }
@@ -529,8 +537,8 @@ export default function Game() {
                 {item === detail.player_one
                   ? parse(detail.icon_one)
                   : item === detail.player_two
-                  ? parse(detail.icon_two)
-                  : null}
+                    ? parse(detail.icon_two)
+                    : null}
               </li>
             );
           })}

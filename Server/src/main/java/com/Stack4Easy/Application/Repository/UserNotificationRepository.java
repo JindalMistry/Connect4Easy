@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface UserNotificationRepository extends JpaRepository<UserNotification, Long> {
     List<UserNotification> findAllByUsernameOrderByTimestampDesc(String username);
+    void deleteByUsernameAndRefnameAndType(String username, String ref , String type);
 }

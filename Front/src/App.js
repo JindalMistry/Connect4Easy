@@ -1,3 +1,5 @@
+import "react-toastify/dist/ReactToastify.css";
+import './Css/toastify.css';
 import './Css/login-page.css';
 import './Css/global.css';
 import './Css/enter-otp.css';

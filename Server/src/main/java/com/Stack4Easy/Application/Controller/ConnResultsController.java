@@ -32,7 +32,7 @@ public class ConnResultsController {
     }
 
     @PostMapping("/manage-player-move/{Id}")
-    public ResponseEntity<ResponseModel> saveMpve(@RequestBody ConnectionGames games, @PathVariable Integer Id){
+    public ResponseEntity<ResponseModel> saveMove(@RequestBody ConnectionGames games, @PathVariable Integer Id){
         connGameService.saveMove(games, Id);
         return ResponseEntity.ok(
                 new ResponseModel(
@@ -41,9 +41,12 @@ public class ConnResultsController {
                 )
         );
     }
-    @GetMapping("/manage-exit-game/{username}")
-    public ResponseEntity<ResponseModel> exitGame(@PathVariable String username){
-        connResultsService.exitGame(username);
+    @GetMapping("/manage-exit-game/{username}/{opp}")
+    public ResponseEntity<ResponseModel> exitGame(
+            @PathVariable String username,
+            @PathVariable String opp
+    ){
+        connResultsService.exitGame(username, opp);
         return ResponseEntity.ok(
                 new ResponseModel(
                         "SUCCESS",

@@ -69,8 +69,12 @@ public class ConnectionsController {
         return ResponseEntity.ok(connectionService.declineChallenge(connDto));
     }
 
-    @GetMapping("/friends/manage-game-status/{username}/{type}")
-    public ResponseEntity<ResponseModel> startGame(@PathVariable String username, @PathVariable String type) {
-         return ResponseEntity.ok(connectionService.startGame(username, type));
+    @GetMapping("/friends/manage-game-status/{username}/{opp}/{type}")
+    public ResponseEntity<ResponseModel> startGame(
+            @PathVariable String username,
+            @PathVariable String opp,
+            @PathVariable String type
+    ) {
+         return ResponseEntity.ok(connectionService.startGame(username, opp, type));
     }
 }

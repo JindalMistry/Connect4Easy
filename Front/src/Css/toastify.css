@@ -1,0 +1,122 @@
+/** Used to define container behavior: width, position: fixed etc... **/
+.Toastify__toast-container {
+    left: 50%;
+    bottom: 5%;
+    position: fixed;
+    transform: translate(-50%, 0px);
+    z-index: 9999;
+    width: 40%;
+}
+
+/** Classes for the displayed toast **/
+.Toastify__toast {
+    border: none;
+    border-radius: 30px;
+    background-color: aliceblue;
+    color: black;
+    padding-left: 5%;
+}
+/* .Toastify__toast--rtl {
+}
+.Toastify__toast-body {
+}
+
+/** Used to position the icon **/
+
+/** handle the notification color and the text color based on the theme **/
+/* .Toastify__toast-theme--dark {
+}
+.Toastify__toast-theme--light {
+}
+.Toastify__toast-theme--colored.Toastify__toast--default {
+}
+.Toastify__toast-theme--colored.Toastify__toast--info {
+}
+.Toastify__toast-theme--colored.Toastify__toast--success {
+}
+.Toastify__toast-theme--colored.Toastify__toast--warning {
+}
+.Toastify__toast-theme--colored.Toastify__toast--error {
+}
+
+.Toastify__progress-bar {
+}
+.Toastify__progress-bar--rtl {
+}
+.Toastify__progress-bar-theme--light {
+}
+.Toastify__progress-bar-theme--dark {
+}
+.Toastify__progress-bar--info {
+}
+.Toastify__progress-bar--success {
+}
+.Toastify__progress-bar--warning {
+}
+.Toastify__progress-bar--error {
+}
+/** colored notifications share the same progress bar color **/
+/* .Toastify__progress-bar-theme--colored.Toastify__progress-bar--info,
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--success,
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--warning,
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--error {
+} */
+
+/** Classes for the close button. Better use your own closeButton **/
+/* .Toastify__close-button {
+}
+.Toastify__close-button--default {
+}
+.Toastify__close-button > svg {
+}
+.Toastify__close-button:hover,
+.Toastify__close-button:focus {
+} */
+
+@media screen and (max-width: 600px) {
+    .Toastify__toast-container {
+        width: 90%;
+    }
+}
+
+.Toastify__toast--error {
+    border: 1px solid #eb5757;
+    border-radius: 50px !important;
+    background: #fae1e2 !important;
+}
+.Toastify__toast--success {
+    border: 1px solid #3a9ea5 !important;
+    border-radius: 50px !important;
+    background: #f0f9fa !important;
+}
+.Toastify__toast--warning {
+    border: 1px solid #e78326 !important;
+    border-radius: 50px !important;
+    background: #fadfc5 !important;
+}
+.Toastify__toast-body {
+    color: #444c63;
+    font-size: 16px;
+    line-height: 20px;
+    padding: 0px;
+    width: 100%;
+    font-weight: 400;
+}
+.Toastify__toast > button > svg {
+    display: none;
+}
+
+.Toastify__toast--warning {
+    background: #ffe8bc !important;
+}
+.Toastify__toast--error {
+    background: #fca7a9 !important;
+}
+.toastBody {
+    font-family: "Atlas Grotesk Web", Arial, Helvetica, sans-serif;
+    color: #10171d; /* #10171D */
+    font-size: 0.875rem !important;
+}
+.toastProgress {
+    background: #333f48 !important;
+}

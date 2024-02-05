@@ -40,9 +40,6 @@ export default function LoadingScreen({
       <div className="loading-screen-section left-open" ref={leftRef}>
         <div
           className="loading-screen-icon"
-          onClick={() => {
-            process(false);
-          }}
         >
           {parse(p1.icon)}
         </div>
@@ -58,9 +55,8 @@ export default function LoadingScreen({
         <p className="loading-screen-name">{p2.name}</p>
         {showBtn ? (
           <div
-            className={`loading-screen-btn-right flex ${
-              timer == 0 ? "" : "w45"
-            }`}
+            className={`loading-screen-btn-right flex ${timer == 0 ? "" : "w45"
+              }`}
           >
             <Button label={"Rematch"} className={"main"} onClick={onRematch} />
             {timer == 0 ? null : <div className="rematch-timer">{timer}s</div>}

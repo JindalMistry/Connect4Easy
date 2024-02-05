@@ -14,13 +14,20 @@ export default function AddConnection({ onClose, refereshNotification, show }) {
     const dispatch = useDispatch();
     const [users, setUsers] = useState([]);
     const [text, setText] = useState("");
+    const defaultBtnLoader = {
+        showSearchBtn: false,
+        showAddFriendBtn: false
+    };
+    const [btnLoader, setBtnLoader] = useState(defaultBtnLoader);
 
     const loadUsers = () => {
+        setBtnLoader(prev => ({ ...prev, showSearchBtn: true }));
         searchConnection(text, User.user_id).then(res => {
             if (res.status === 200) {
                 console.log("User search : ", res.data);
                 setUsers(res.data);
             }
+            setBtnLoader(prev => ({ ...prev, showSearchBtn: false }));
         });
     };
 
@@ -32,6 +39,7 @@ export default function AddConnection({ onClose, refereshNotification, show }) {
     const onAddConnection = (id) => {
         let refUser = users.find(o => o.user_id === id);
         if (refUser) {
+            setBtnLoader(prev => ({ ...prev, showAddFriendBtn: true }));
             const obj = {
                 user_id: User.user_id,
                 username: User.username,
@@ -47,8 +55,10 @@ export default function AddConnection({ onClose, refereshNotification, show }) {
                         dispatch(insertNotification(res.data));
                     }
                 }
+                setBtnLoader(prev => ({ ...prev, showAddFriendBtn: false }));
             }).catch(ex => {
                 console.log("Res 50: ", ex);
+                setBtnLoader(prev => ({ ...prev, showAddFriendBtn: false }));
             });
         }
         else { console.log("User not found!"); }
@@ -83,6 +93,7 @@ export default function AddConnection({ onClose, refereshNotification, show }) {
                             label={"Search"}
                             className={"conn-search-btn"}
                             onClick={loadUsers}
+                            showLoader={btnLoader.showSearchBtn}
                         />
                     </div>
                 </div>
@@ -100,6 +111,7 @@ export default function AddConnection({ onClose, refereshNotification, show }) {
                                             className={"conn-list-btn"}
                                             id={item.user_id}
                                             onClick={() => onAddConnection(item.user_id)}
+                                            showLoader={btnLoader.showAddFriendBtn}
                                         />
                                     </div>
                                 </li>

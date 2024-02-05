@@ -8,11 +8,12 @@ import Home from './Page/Home';
 import { Provider } from 'react-redux';
 import store from './Store/store';
 import Game from './Page/game';
+import { ToastContainer } from 'react-toastify';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App/>
+    element: <App />
   },
   {
     path: "/otp",
@@ -34,6 +35,19 @@ root.render(
   <React.Fragment>
     <Provider store={store}>
       <RouterProvider router={router} />
+      <ToastContainer
+        position="bottom-center"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={true}
+        pauseOnHover={false}
+        progressClassName="toastProgress"
+        bodyClassName="toastBody"
+      />
     </Provider>
   </React.Fragment>
 );

@@ -29,10 +29,10 @@ import AcceptChallenge from "../Popup/accept-challenge";
 
 // const SOCKET_URL = "ws://localhost:8080/ws";
 // const SOCKJS_URL = "http://localhost:8080/ws";
-// const SOCKET_URL = "ws://192.168.100.43:8080/ws";
-// const SOCKJS_URL = "http://192.168.100.43:8080/ws";
-const SOCKET_URL = "ws://192.168.1.6:8080/ws";
-const SOCKJS_URL = "http://192.168.1.6:8080/ws";
+const SOCKET_URL = "ws://192.168.100.43:8080/ws";
+const SOCKJS_URL = "http://192.168.100.43:8080/ws";
+// const SOCKET_URL = "ws://192.168.1.6:8080/ws";
+// const SOCKJS_URL = "http://192.168.1.6:8080/ws";
 let stompClient = null;
 
 export default function Home(props) {
@@ -42,7 +42,13 @@ export default function Home(props) {
   const dispatch = useDispatch();
   const sidebarRef = useRef();
   const navigate = useNavigate();
-
+  const defaultBtnLoader = {
+    showLaterLoader: false,
+    showPlayLoader: false,
+    showAcceptLoader: false,
+    showDeclineLoader: false
+  };
+  const [btnLoader, setBtnLoader] = useState(defaultBtnLoader);
   const [showAddConnPopup, setShowAddConnPopup] = useState(false);
   const [activeTab, setActiveTab] = useState("2");
   const [notiData, setNotiData] = useState([]);
@@ -118,6 +124,13 @@ export default function Home(props) {
       if (res.type === "CHALLENGE_DECLINE") {
         loadNotifications();
       }
+      if (res.type === "CHALLENGE_REQUEST") {
+        loadNotifications();
+        setChallenger({
+          user_id: res.user_id,
+          username: res.username,
+        });
+      }
       if (res.type === "CHALLENGE_ACCEPT") {
         setChallenger({
           user_id: res.user_id,
@@ -125,8 +138,10 @@ export default function Home(props) {
         });
         setGameId(parseInt(res.content));
         setAcceptChallengeModalPopup(true);
+        loadNotifications();
       }
       if (res.type === "START_GAME") {
+        loadNotifications();
         navigate("/game", {
           state: {
             game_id: gameId,
@@ -137,7 +152,9 @@ export default function Home(props) {
         });
       }
       if (res.type === "DO_NOT_START") {
+        alert('Your opponent has declined the game request!');
         setShowConnectionModalPopup(false);
+        loadNotifications();
       }
     }
   }, [User.socketResponse]);
@@ -206,11 +223,11 @@ export default function Home(props) {
           });
         }
       })
-      .catch((ex) => {});
+      .catch((ex) => { });
   };
   const logoutProcess = () => {
     logout(User.username)
-      .then((res) => {})
+      .then((res) => { })
       .catch((ex) => {
         let res = ex.response;
         if (res.status === 403) {
@@ -228,6 +245,7 @@ export default function Home(props) {
       ref_id: challenger.user_id,
       refname: challenger.username,
     };
+    setBtnLoader(prev => ({ ...prev, showAcceptLoader: true }));
     console.log("Input object at accept challenge : ", obj);
     acceptChallenge(obj)
       .then((d) => {
@@ -238,10 +256,12 @@ export default function Home(props) {
             setGameId(res.Data.game_id);
             setShowConnectionModalPopup(true);
           }
+          setBtnLoader(prev => ({ ...prev, showAcceptLoader: false }));
         }
       })
       .catch((ex) => {
         console.log("Exception found 200 : ", ex);
+        setBtnLoader(prev => ({ ...prev, showAcceptLoader: false }));
       });
   };
   const onChallengeDecline = () => {
@@ -257,19 +277,24 @@ export default function Home(props) {
       refname: challenger.username,
     };
     console.log("Input object", obj);
+    setBtnLoader(prev => ({ ...prev, showDeclineLoader: true }));
     declineChallenge(obj).then((d) => {
       let res = d.data;
       if (res.Status === 200) {
-        setTimeout(() => {
-          loadNotifications();
-        }, 1000);
+        loadNotifications();
         setShowChallangeReceivedModalPopup(false);
+        setBtnLoader(prev => ({ ...prev, showDeclineLoader: false }));
       }
-    });
+    })
+      .catch(ex => {
+        console.log("287 : ", ex);
+        setBtnLoader(prev => ({ ...prev, showDeclineLoader: false }));
+      });
   };
 
   const onStartGame = () => {
-    startGame(challenger.username, "accept")
+    // setBtnLoader(prev => ({ ...prev, showPlayLoader: true }));
+    startGame(User.username, challenger.username, "accept")
       .then((d) => {
         let res = d.data;
         if (res.Status === 200) {
@@ -282,24 +307,33 @@ export default function Home(props) {
               player: 1,
             },
           });
+          loadNotifications();
+          setBtnLoader(prev => ({ ...prev, showPlayLoader: false }));
         }
       })
       .catch((err) => {
+        setBtnLoader(prev => ({ ...prev, showPlayLoader: false }));
         console.log("Error: " + err);
       });
   };
   const onCancelGameStart = () => {
-    startGame(challenger.username, "decline")
+    setBtnLoader(prev => ({ ...prev, showLaterLoader: true }));
+    startGame(User.username, challenger.username, "decline")
       .then((d) => {
         let res = d.data;
+        console.log("Decline challenge", res);
         if (res.Status === 200) {
           setAcceptChallengeModalPopup(false);
+          loadNotifications();
         } else {
           alert(res.Message);
         }
+        setBtnLoader(prev => ({ ...prev, showLaterLoader: false }));
       })
       .catch((err) => {
         console.log("Error: " + err);
+        setAcceptChallengeModalPopup(false);
+        setBtnLoader(prev => ({ ...prev, showLaterLoader: false }));
       });
   };
   const handleChallengeNotificationPress = (item) => {
@@ -347,8 +381,10 @@ export default function Home(props) {
             setAcceptChallengeModalPopup(false);
           }}
           sender={challenger}
-          onAccept={onStartGame}
-          onDecline={onCancelGameStart}
+          onPlay={onStartGame}
+          onLater={onCancelGameStart}
+          showLaterLoader={btnLoader.showLaterLoader}
+          showPlayLoader={btnLoader.showPlayLoader}
         />
       ) : null}
       {showConnectionModalPopup ? (
@@ -363,6 +399,8 @@ export default function Home(props) {
           sender={challenger}
           onAccept={onChallengeAccept}
           onDecline={onChallengeDecline}
+          showAcceptLoader={btnLoader.showAcceptLoader}
+          showDeclineLoader={btnLoader.showDeclineLoader}
         />
       ) : null}
       {showAddConnPopup ? (

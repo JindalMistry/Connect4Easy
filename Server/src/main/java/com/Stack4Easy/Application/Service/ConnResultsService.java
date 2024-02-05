@@ -4,6 +4,8 @@ import com.Stack4Easy.Application.DTO.AddConnDto;
 import com.Stack4Easy.Application.DTO.ConnNotification;
 import com.Stack4Easy.Application.DTO.ResponseModel;
 import com.Stack4Easy.Application.Entity.ConnectionResults;
+import com.Stack4Easy.Application.Entity.Connections;
+import com.Stack4Easy.Application.Repository.ConnRepository;
 import com.Stack4Easy.Application.Repository.ConnResultRepository;
 import com.Stack4Easy.Registration.Entity.User;
 import com.Stack4Easy.Registration.Entity.UserStatus;
@@ -16,6 +18,8 @@ import org.springframework.boot.context.properties.bind.validation.ValidationErr
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -25,6 +29,7 @@ public class ConnResultsService {
     private final ConnResultRepository connResultRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final UserRepository userRepository;
+    private final ConnRepository connRepository;
 
     public ConnectionResults createRoom(AddConnDto conn){
         return connResultRepository.save(
@@ -61,11 +66,22 @@ public class ConnResultsService {
     }
 
     @Transactional
-    public void exitGame(String username) {
+    public void exitGame(String username, String opp) {
         Optional<User> optUser = userRepository.findByUsername(username);
-        if(optUser.isPresent()){
+        Optional<User> optOppUser = userRepository.findByUsername(opp);
+        if(optUser.isPresent()) {
             User user = optUser.get();
             user.setStatus(UserStatus.ONLINE);
+            if(optOppUser.isPresent() && optOppUser.get().getStatus() == UserStatus.INGAME){
+                messagingTemplate.convertAndSendToUser(
+                        opp,
+                        "/queue/friends",
+                        ConnNotification.builder()
+                                .user_id(user.getUser_id())
+                                .type("REMATCH_DECLINE")
+                                .build()
+                );
+            }
         }
     }
 
@@ -143,6 +159,26 @@ public class ConnResultsService {
         Optional<ConnectionResults> optRoom = connResultRepository.findById(gameId);
         if(optRoom.isPresent()){
             ConnectionResults room = optRoom.get();
+            List<Connections> playerOne = connRepository.findByUserIdAndRefId(room.getPlayer_one(), room.getPlayer_two());
+            List<Connections> playerTwo = connRepository.findByUserIdAndRefId(room.getPlayer_two(), room.getPlayer_one());
+            if(!playerOne.isEmpty()){
+                Connections p1 = playerOne.get(0);
+                if(p1 != null){
+                    p1.setTotal_games(p1.getTotal_games() + 1);
+                    if(Objects.equals(p1.getUser_id(), userId)) {
+                        p1.setWins(p1.getWins() + 1);
+                    }
+                }
+            }
+            if(!playerTwo.isEmpty()){
+                Connections p2 = playerTwo.get(0);
+                if(p2 != null){
+                    p2.setTotal_games(p2.getTotal_games() + 1);
+                    if(Objects.equals(p2.getUser_id(), userId)) {
+                        p2.setWins(p2.getWins() + 1);
+                    }
+                }
+            }
             room.setResult(userId);
         }
         return new ResponseModel(

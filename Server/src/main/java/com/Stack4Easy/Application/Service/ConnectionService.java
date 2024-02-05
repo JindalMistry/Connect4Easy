@@ -13,6 +13,7 @@ import com.Stack4Easy.Registration.Entity.UserStatus;
 import com.Stack4Easy.Registration.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.spi.QueryOptionsAdapter;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -216,8 +217,6 @@ public class ConnectionService {
                         res.setMessage("Player is not online!");
                     }
                     else{
-                        user.setStatus(UserStatus.INGAME);
-                        userRepository.save(user);
                         userNotificationService.pushNotification(
                                 new UserNotificationDto(
                                         0L,
@@ -274,6 +273,7 @@ public class ConnectionService {
                         )
                 );
             }
+
         }
         return res;
     }
@@ -322,25 +322,33 @@ public class ConnectionService {
         );
     }
 
-    public ResponseModel startGame(String username, String type) {
+    @Transactional
+    public ResponseModel startGame(String username, String opp, String type) {
         ResponseModel res = new ResponseModel();
-        Optional<User> user = userRepository.findByUsername(username);
-        if(user.isPresent()){
-            if(user.get().getStatus() == UserStatus.ONLINE){
-                User change = user.get();
-                change.setStatus(UserStatus.INGAME);
-                userRepository.save(change);
+        Optional<User> optUser = userRepository.findByUsername(username);
+        Optional<User> optOpp = userRepository.findByUsername(opp);
+        if(optUser.isPresent() && optOpp.isPresent()){
+            if(optUser.get().getStatus() == UserStatus.ONLINE){
+                User user = optUser.get();
+                User opponent = optOpp.get();
+                if(type.matches("accept")) {
+                    user.setStatus(UserStatus.INGAME);
+                    opponent.setStatus(UserStatus.INGAME);
+                }
                 messagingTemplate.convertAndSendToUser(
-                        username,
+                        opp,
                         "/queue/friends",
                         ConnNotification.builder()
                                 .user_id(0)
                                 .type(type.matches("accept") ? "START_GAME" : "DO_NOT_START")
                                 .build()
                 );
+
+                userNotificationService.deleteByUsernameAndRefnameAndType(username, opp, "CHALLENGE_ACCEPT");
+                userNotificationService.deleteByUsernameAndRefnameAndType(opp,username, "CHALLENGE_REQUEST");
                 res.setStatus(200);
             }
-            else if(user.get().getStatus() == UserStatus.INGAME){
+            else if(optUser.get().getStatus() == UserStatus.INGAME){
                 res.setStatus(500);
                 res.setMessage("User is in game, please try again later!");
             }
@@ -354,5 +362,13 @@ public class ConnectionService {
             res.setMessage("User not found!");
         }
         return res;
+    }
+    public Connections getByUsernameAndRefName(String user, String ref){
+        Optional<Connections> conn = connRepository.findByUsernameAndRefname(user, ref);
+        return conn.orElse(null);
+    }
+    public Connections getByUserIdAndRefId(Integer user, Integer ref){
+        List<Connections> conn = connRepository.findByUserIdAndRefId(user, ref);
+        return conn.isEmpty() ? null : conn.get(0);
     }
 }

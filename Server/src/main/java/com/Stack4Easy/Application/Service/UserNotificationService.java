@@ -66,4 +66,8 @@ public class UserNotificationService {
         Optional<UserNotification> optionalUserNotification = userNotificationRepository.findById(notificationId);
         return optionalUserNotification.orElse(null);
     }
+
+    public void deleteByUsernameAndRefnameAndType(String username, String ref, String type) {
+        userNotificationRepository.deleteByUsernameAndRefnameAndType(username, ref, type);
+    }
 }
