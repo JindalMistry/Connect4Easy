@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 
-export const toastAlert = (Message, Position, type) => {
-    let position = Position ? Position : "bottom-center";
+export const toastAlert = (Message, type) => {
+    let position = "bottom-center";
     if (type === "SUCCESS") {
         toast.success(Message, {
             className: "toast-message"

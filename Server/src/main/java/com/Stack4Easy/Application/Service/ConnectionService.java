@@ -163,7 +163,7 @@ public class ConnectionService {
                 )
         );
         return new ResponseModel(
-                String.format("You are now friends with %s", addConnDto.getUsername()),
+                String.format("You are now friends with %s", addConnDto.getReference_name()),
                 200
         );
     }

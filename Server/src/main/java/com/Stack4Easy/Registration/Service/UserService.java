@@ -18,6 +18,7 @@ import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -113,14 +114,19 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public String logout(UserDto userDto){
+    public ResponseModel logout(UserDto userDto){
         Optional<User> dbUser = userRepository.findByUsername(userDto.getUsername());
+        ResponseModel res = new ResponseModel(
+                "You have been logged out successfully!",
+                200
+        );
         if(dbUser.isPresent()){
             User user = dbUser.get();
             user.setStatus(UserStatus.OFFLINE);
         }
         else {
-            throw new UsernameNotFoundException("User with this username does not exists!");
+            res.setStatus(500);
+            res.setMessage("User with this username does not exist!");
         }
         List<Connections> connectionsList =  connRepository.findByUsernameAndActiveAndIsRequestAccepted(userDto.getUsername(), true, true);
 
@@ -140,7 +146,7 @@ public class UserService implements UserDetailsService {
         friendList.forEach(obj -> {
             obj.setActive(false);
         });
-        return "Success";
+        return res;
     }
 
     public List<ConnSearch> getUserBySearch(String searchString, Integer user_id) {

@@ -7,8 +7,9 @@ import { addConnection, pushNotification, searchConnection } from '../Services/c
 import { useDispatch, useSelector } from 'react-redux';
 import { UserInfo } from '../Store/authSlice';
 import { insertNotification } from '../Store/connectSlice';
+import { toastAlert } from '../Component/ToasteMessage';
 
-export default function AddConnection({ onClose, refereshNotification, show }) {
+export default function AddConnection({ onClose, show, onRefresh }) {
 
     const User = useSelector(UserInfo);
     const dispatch = useDispatch();
@@ -49,11 +50,14 @@ export default function AddConnection({ onClose, refereshNotification, show }) {
             addConnection(obj).then(res => {
                 let response = res.data;
                 console.log("Res.data", response);
-                alert(response.Message);
                 if (response.Status === 200) {
+                    toastAlert(response.Message, "SUCCESS")
                     if (response.Data.type === "MESSAGE") {
-                        dispatch(insertNotification(res.data));
+                        onRefresh();
                     }
+                }
+                else{
+                    toastAlert(response.Message, "ERROR");
                 }
                 setBtnLoader(prev => ({ ...prev, showAddFriendBtn: false }));
             }).catch(ex => {

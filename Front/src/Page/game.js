@@ -14,6 +14,7 @@ import {
 } from "../Services/game-service";
 import icons from "../emoji.json";
 import parse from "html-react-parser";
+import { toastAlert } from "../Component/ToasteMessage";
 let Allow = null;
 export default function Game() {
   const location = useLocation();
@@ -100,16 +101,13 @@ export default function Game() {
         setBoard(tempBoard);
         let ver = verify(tempBoard, r, c, parseInt(res.user_id));
         if (ver === true) {
-          const opp =
-            detail.player_one === move
-              ? detail.player_one_name
-              : detail.player_two_name;
+          const opp = detail.player_one === move ? detail.player_one_name : detail.player_two_name;
           console.log("Set loading true");
           setIsLoading(true);
           Allow = true;
           setShowOptBtn(true);
           setTimeout(() => {
-            alert("Congratulations, " + opp + " have won the game!");
+            toastAlert("Congratulations, " + opp + " have won the game!", "SUCCESS");
           }, 50);
         }
         setMove(User.user_id);
@@ -124,24 +122,14 @@ export default function Game() {
         setDetail((prev) => ({
           ...prev,
           game_id: parseInt(ret[0]),
-          player_one:
-            detail.player_one === User.user_id
-              ? detail.player_two
-              : detail.player_one,
-          player_one_name:
-            detail.player_one === User.user_id
-              ? detail.player_two_name
-              : detail.player_one_name,
+          player_one: detail.player_one === User.user_id ? detail.player_two : detail.player_one,
+          player_one_name: detail.player_one === User.user_id ? detail.player_two_name : detail.player_one_name,
           player_two_name: User.username,
           player_two: User.user_id,
           icon_one: ret[1],
           icon_two: ret[2],
         }));
-        setMove(
-          detail.player_one === User.user_id
-            ? detail.player_two
-            : detail.player_one
-        );
+        setMove(detail.player_one === User.user_id ? detail.player_two : detail.player_one);
         console.log("Arr opp : ", arr);
         setBoard(arr);
         setIsRequestPending(false);
@@ -152,8 +140,27 @@ export default function Game() {
         }, 2000);
       }
       if (res.type === "REMATCH_DECLINE") {
-        alert("Your opponent has left the game!");
+        toastAlert("Your opponent has left the game!", "ERROR");
         onHome();
+      }
+      if(res.type === "OFFLINE") {
+        updateGameStatus(detail.game_id, User.user_id)
+          .then((d) => {
+            let res = d.data;
+            if (res.Status === 200) {
+              toastAlert("Your opponent has left the game!, Win by default!", "WARN");
+              setIsLoading(true);
+              Allow = true;
+              navigate('/home', {
+                state: { username: User.username, user_id: User.user_id }
+              })
+            } else {
+              console.log("Update game status error:");
+            }
+          })
+          .catch((ex) => {
+            console.log("Ex 299 : ", ex);
+          });
       }
     }
   }, [User.socketResponse]);
@@ -283,7 +290,7 @@ export default function Game() {
   const validate = (row, col) => {
     try {
       if (move !== User.user_id) {
-        alert("Oops! it is your opponent's move.");
+        toastAlert("Oops! it is your opponent's move.", "WARN");
         return false;
       } else if (board[row][col] !== 0) {
         // User.user_id == detail.player_one
@@ -293,24 +300,21 @@ export default function Game() {
         let msg =
           User.username +
           ", Oops! Can’t place your move there. Make sure the block you want to place your move is Empty.";
-        alert(msg);
+        toastAlert(msg, "WARN");
         return false;
       } else if (row + 1 <= 6 && board[row + 1][col] === 0) {
         let msg =
-          User.username +
-          ", Oops! Can’t place your move there. Make sure the blocks beneath are selected first.";
-        alert(msg);
+          User.username + ", Oops! Can’t place your move there. Make sure the blocks beneath are selected first.";
+        toastAlert(msg, "WARN");
         return false;
       }
-    }
-    catch (ex) {
+    } catch (ex) {
       console.log("validate exception.", ex);
     }
     return true;
   };
 
   const onBoardPress = (i) => {
-
     let col = i % 6;
     let row = Math.floor(i / 6);
 
@@ -328,10 +332,7 @@ export default function Game() {
         game_id: detail.game_id,
         colum_id: parseInt(col),
         row_id: parseInt(row),
-        icon:
-          User.user_id === detail.player_one
-            ? detail.icon_one
-            : detail.icon_two,
+        icon: User.user_id === detail.player_one ? detail.icon_one : detail.icon_two,
       };
       setBlock(true);
       setSelectedTile(i);
@@ -339,12 +340,10 @@ export default function Game() {
         .then((d) => {
           let res = d.data;
           if (res.Status === 200 && res.Message === "PLACED") {
-            setMove(
-              move === detail.player_one ? detail.player_two : detail.player_one
-            );
+            setMove(move === detail.player_one ? detail.player_two : detail.player_one);
             setBlock(false);
           } else {
-            alert("Move error:");
+            toastAlert("Move error:", "ERROR");
           }
         })
         .catch((err) => {
@@ -368,7 +367,7 @@ export default function Game() {
             console.log("Ex 299 : ", ex);
           });
         setTimeout(() => {
-          alert(`Congratulations, ${User.username} have won the game.`);
+          toastAlert(`Congratulations, ${User.username} have won the game.`, "SUCCESS");
         }, 50);
       }
     }
@@ -401,10 +400,7 @@ export default function Game() {
       }
       let obj = {
         player_one: User.user_id,
-        player_two:
-          User.user_id === detail.player_one
-            ? detail.player_two
-            : detail.player_one,
+        player_two: User.user_id === detail.player_one ? detail.player_two : detail.player_one,
         icon_one: icons[i1],
         icon_two: icons[i2],
       };
@@ -418,9 +414,7 @@ export default function Game() {
               player_one: User.user_id,
               player_one_name: User.username,
               player_two_name:
-                detail.player_one === res.Data.player_two
-                  ? detail.player_one_name
-                  : detail.player_two_name,
+                detail.player_one === res.Data.player_two ? detail.player_one_name : detail.player_two_name,
               player_two: res.Data.player_two,
               icon_one: icons[i1],
               icon_two: icons[i2],
@@ -440,19 +434,16 @@ export default function Game() {
           console.log("353 ex : ", ex);
         });
     } else if (timer === 0) {
-      let opp =
-        detail.player_one === User.user_id
-          ? detail.player_two_name
-          : detail.player_one_name;
+      let opp = detail.player_one === User.user_id ? detail.player_two_name : detail.player_one_name;
       sendRematchRequest(User.username, opp)
         .then((d) => {
           let res = d.data;
           if (res.Status === 200) {
-            alert("Rematch request has been sent!");
+            toastAlert("Rematch request has been sent!", "SUCCESS");
             setTimer(20);
             startTimer();
           } else {
-            alert("Opponent has exited.");
+            toastAlert("Opponent has exited.", "ERROR");
             onHome();
             console.log("Error : ");
           }
@@ -461,9 +452,7 @@ export default function Game() {
           console.log("exception found : ", ex);
         });
     } else {
-      alert(
-        "Request has been sent already!, please wait for other side to confirm."
-      );
+      toastAlert("Request has been sent already!, please wait for other side to confirm.", "WARN");
     }
   };
 
@@ -506,9 +495,7 @@ export default function Game() {
         </div>
         <p className="game-heading-main">
           Turn : &nbsp;
-          {parse(
-            move === detail.player_one ? detail.icon_one : detail.icon_two
-          )}
+          {parse(move === detail.player_one ? detail.icon_one : detail.icon_two)}
         </p>
         <div className="game-heading-tile right-tile">
           <p>{detail.player_two_name}</p>
@@ -524,21 +511,20 @@ export default function Game() {
             return (
               <li
                 key={index}
-                className={`game-tile ${index === selectedTile ? " active" : ""
-                  }`}
+                className={`game-tile ${index === selectedTile ? " active" : ""}`}
                 onClick={() => {
                   if (!block) {
                     onBoardPress(index);
                   } else {
-                    alert("Please wait for a while...");
+                    toastAlert("It is your opponent's move, Please wait for a while...", "WARN");
                   }
                 }}
               >
                 {item === detail.player_one
                   ? parse(detail.icon_one)
                   : item === detail.player_two
-                    ? parse(detail.icon_two)
-                    : null}
+                  ? parse(detail.icon_two)
+                  : null}
               </li>
             );
           })}

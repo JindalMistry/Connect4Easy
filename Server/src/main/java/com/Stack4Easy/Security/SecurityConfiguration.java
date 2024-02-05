@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                 .cors(cors -> {
                                 cors.configurationSource(source -> {
                                     CorsConfiguration config = new CorsConfiguration();
-                                    config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://192.168.100.43:3000", "http://192.168.1.6:3000"));
+                                    config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://192.168.100.43:3000", "http://192.168.1.7:3000"));
                                     config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
                                     config.setAllowedHeaders(Arrays.asList("*"));
                                     config.setAllowCredentials(true);
@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                 })
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/auth/register","/auth/login", "/ws/**", "/ws","/h2-console","/h2-console/**").permitAll()
+                            .requestMatchers("/auth/register","/auth/login","/auth/test", "/ws/**", "/ws","/h2-console","/h2-console/**").permitAll()
                             .anyRequest()
                             .authenticated();
                 })

@@ -6,6 +6,7 @@ import { sendChallenge } from '../Services/conn-service';
 import { useSelector } from 'react-redux';
 import { UserInfo } from '../Store/authSlice';
 import { ConnectInfo } from '../Store/connectSlice';
+import { toastAlert } from '../Component/ToasteMessage';
 
 export default function ConnDetail({ onClose, show, conn }) {
     const User = useSelector(UserInfo);
@@ -22,13 +23,17 @@ export default function ConnDetail({ onClose, show, conn }) {
         sendChallenge(obj).then((res) => {
             let response = res.data;
             if (response.Status === 200) {
-                alert(response.Message);
+                toastAlert(response.Message, "SUCCESS");
                 if (onClose) {
                     onClose();
                 }
             }
             setBtnLoader(false);
-        });
+        })
+        .catch((err) => {
+            console.log("Err");
+            toastAlert("Error while sending challenge", "ERROR");
+        })
     };
 
     return (

@@ -6,6 +6,7 @@ import com.Stack4Easy.Application.Service.ConnectionService;
 import com.Stack4Easy.Registration.DTO.UserDto;
 import com.Stack4Easy.Registration.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -23,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequestMapping(path = "/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
@@ -53,13 +55,17 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/logout/{username}")
-    public ResponseEntity<String> logout(@PathVariable String username){
-        userService.logout(new UserDto(
+    public ResponseEntity<ResponseModel> logout(@PathVariable String username){
+        ResponseModel res = userService.logout(new UserDto(
                 0,
                 username,
                 "",
                 ""
         ));
-        return ResponseEntity.ok("SUCCESS");
+        return ResponseEntity.ok(res);
+    }
+    @GetMapping("/test")
+    public void Test(){
+        log.info("Test successfully.");
     }
 }

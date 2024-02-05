@@ -6,7 +6,7 @@ import Button from "../Component/Button";
 import PlayConnection from "./play-connection";
 import AddConnection from "../Popup/add-connection";
 import { useDispatch, useSelector } from "react-redux";
-import { UserInfo, setSocketResponse } from "../Store/authSlice";
+import { UserInfo, resetAuthSlice, setSocketResponse } from "../Store/authSlice";
 import {
   acceptChallenge,
   acceptConnection,
@@ -18,6 +18,7 @@ import {
 import {
   ConnectInfo,
   deleteNotification,
+  resetConnectSlice,
   setNotifications,
   updateActiveNotification,
 } from "../Store/connectSlice";
@@ -26,13 +27,14 @@ import LoadingScreen from "../Component/LoadingScreen";
 import ReceiveChallange from "../Popup/receive-challange";
 import ConnectionScreen from "../Popup/connecting-modal";
 import AcceptChallenge from "../Popup/accept-challenge";
+import { toastAlert } from "../Component/ToasteMessage";
 
 // const SOCKET_URL = "ws://localhost:8080/ws";
 // const SOCKJS_URL = "http://localhost:8080/ws";
-const SOCKET_URL = "ws://192.168.100.43:8080/ws";
-const SOCKJS_URL = "http://192.168.100.43:8080/ws";
-// const SOCKET_URL = "ws://192.168.1.6:8080/ws";
-// const SOCKJS_URL = "http://192.168.1.6:8080/ws";
+// const SOCKET_URL = "ws://192.168.100.43:8080/ws";
+// const SOCKJS_URL = "http://192.168.100.43:8080/ws";
+const SOCKET_URL = "ws://192.168.1.7:8080/ws";
+const SOCKJS_URL = "http://192.168.1.7:8080/ws";
 let stompClient = null;
 
 export default function Home(props) {
@@ -152,9 +154,12 @@ export default function Home(props) {
         });
       }
       if (res.type === "DO_NOT_START") {
-        alert('Your opponent has declined the game request!');
+        toastAlert('Your opponent has declined the game request!', "ERROR");
         setShowConnectionModalPopup(false);
         loadNotifications();
+      }
+      if(res.type === "OFFLINE") {
+        setRefConnList(true);
       }
     }
   }, [User.socketResponse]);
@@ -202,7 +207,7 @@ export default function Home(props) {
         let res = response.data;
         if (res.Status === 200) {
           if (type === "ACCEPT") {
-            alert(res.Message);
+            toastAlert(res.Message, "SUCCESS");
             setRefConnList(true);
           }
           let notiObj = {
@@ -227,13 +232,23 @@ export default function Home(props) {
   };
   const logoutProcess = () => {
     logout(User.username)
-      .then((res) => { })
+      .then((d) => {
+        let res =d.data;
+        if(res.Status === 200) {
+          toastAlert(res.Message, "SUCCESS");
+          dispatch(resetAuthSlice());
+          dispatch(resetConnectSlice());
+          setTimeout(() => {
+            navigate("/");
+          }, 50);
+        }
+       })
       .catch((ex) => {
         let res = ex.response;
-        if (res.status === 403) {
-          alert("You are not authorized user!");
-        } else if (res.status === 500) {
-          alert(res.data.message);
+        if (res && res.status === 403) {
+          toastAlert("You are not authorized user!", "ERROR");
+        } else if (res && res.status === 500) {
+          toastAlert(res.data.message, "ERROR");
         }
       });
   };
@@ -326,7 +341,7 @@ export default function Home(props) {
           setAcceptChallengeModalPopup(false);
           loadNotifications();
         } else {
-          alert(res.Message);
+          toastAlert(res.Message, "ERROR");
         }
         setBtnLoader(prev => ({ ...prev, showLaterLoader: false }));
       })
@@ -406,6 +421,7 @@ export default function Home(props) {
       {showAddConnPopup ? (
         <AddConnection
           onClose={() => setShowAddConnPopup(false)}
+          onRefresh = {loadNotifications}
           show={showAddConnPopup}
         />
       ) : null}

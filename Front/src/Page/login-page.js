@@ -51,7 +51,7 @@ export default function Login() {
           let response = d.data;
           if (response) {
             console.log("at login : ", response);
-            alert(response.Message);
+            toastAlert(response.Message, "SUCCESS");
             if (response.Status === 200) {
               console.log("D.data : ", response.Data);
               dispatch(
@@ -67,8 +67,8 @@ export default function Login() {
               axios.interceptors.request.use(function (config) {
                 const token = response.Data.token;
                 // config.baseURL = 'http://localhost:8080/';
-                config.baseURL = 'http://192.168.100.43:8080/';
-                // config.baseURL = "http://192.168.1.6:8080/";
+                // config.baseURL = 'http://192.168.100.43:8080/';
+                config.baseURL = "http://192.168.1.7:8080/";
                 config.headers.Authorization = `Bearer ${token}`;
                 return config;
               });
@@ -78,10 +78,10 @@ export default function Login() {
         })
         .catch((ex) => {
           let res = ex.response;
-          if (res.status === 403) {
-            alert("Please verify username or password.");
-          } else if (res.status === 500) {
-            alert(res.data.message);
+          if (res && res.status === 403) {
+            toastAlert("Please verify username or password.", "ERROR");
+          } else if (res && res.status === 500) {
+            toastAlert(res.data.message, "ERROR");
           }
           setIsLoading(false);
         });
@@ -95,8 +95,9 @@ export default function Login() {
         .then((d) => {
           let res = d.data;
           if (res.Status === 200) {
-            alert(
+            toastAlert(
               "One time password has been sent to registered email and is only valid for 5 minutes."
+              ,"SUCCESS"
             );
             navigate("/otp");
           }
