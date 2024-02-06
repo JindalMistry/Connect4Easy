@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                 })
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/auth/register","/auth/login","/auth/test", "/ws/**", "/ws","/h2-console","/h2-console/**").permitAll()
+                            .requestMatchers("/auth/register","/auth/login", "/ws/**", "/ws","/h2-console","/h2-console/**").permitAll()
                             .anyRequest()
                             .authenticated();
                 })

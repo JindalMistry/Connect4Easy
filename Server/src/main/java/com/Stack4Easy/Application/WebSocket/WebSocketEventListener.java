@@ -1,4 +1,5 @@
 package com.Stack4Easy.Application.WebSocket;
+import com.Stack4Easy.Application.DTO.ResponseModel;
 import com.Stack4Easy.Registration.DTO.UserDto;
 import com.Stack4Easy.Registration.Service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,26 +28,11 @@ public class WebSocketEventListener {
     private final SimpMessagingTemplate messagingTemplate;
     private final UserService userService;
 
-//    @EventListener
-//    public void handleWebSocketConnectListener(SessionConnectedEvent event){
-//        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-//        String sessionId = accessor.getMessageHeaders().get(SimpMessageHeaderAccessor.SESSION_ID_HEADER, String.class);
-//        String username = getUserId(accessor);
-//    }
-    private String getUserId(StompHeaderAccessor accessor) {
-        GenericMessage<?> generic = (GenericMessage<?>) accessor.getHeader(SimpMessageHeaderAccessor.CONNECT_MESSAGE_HEADER);
-        if (nonNull(generic)) {
-            SimpMessageHeaderAccessor nativeAccessor = SimpMessageHeaderAccessor.wrap(generic);
-            List<String> userIdValue = nativeAccessor.getNativeHeader("sessionId");
-            return isNull(userIdValue) ? null : userIdValue.stream().findFirst().orElse(null);
-        }
-        return null;
-    }
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event){
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String username = (String) accessor.getSessionAttributes().get("username");
-        log.info("User disconnected: {}", username);
+        log.info("User disconnected: {}", accessor);
         if(username != null){
             userService.logout(
                     new UserDto(

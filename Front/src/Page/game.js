@@ -132,6 +132,7 @@ export default function Game() {
         setMove(detail.player_one === User.user_id ? detail.player_two : detail.player_one);
         console.log("Arr opp : ", arr);
         setBoard(arr);
+        setSelectedTile(-1);
         setIsRequestPending(false);
         setTimeout(() => {
           setIsLoading(false);
@@ -143,24 +144,26 @@ export default function Game() {
         toastAlert("Your opponent has left the game!", "ERROR");
         onHome();
       }
-      if(res.type === "OFFLINE") {
-        updateGameStatus(detail.game_id, User.user_id)
-          .then((d) => {
-            let res = d.data;
-            if (res.Status === 200) {
-              toastAlert("Your opponent has left the game!, Win by default!", "WARN");
-              setIsLoading(true);
-              Allow = true;
-              navigate('/home', {
-                state: { username: User.username, user_id: User.user_id }
-              })
-            } else {
-              console.log("Update game status error:");
-            }
-          })
-          .catch((ex) => {
-            console.log("Ex 299 : ", ex);
-          });
+      if (res.type === "STATUS") {
+        if (res.value === "OFFLINE") {
+          updateGameStatus(detail.game_id, User.user_id)
+            .then((d) => {
+              let res = d.data;
+              if (res.Status === 200) {
+                toastAlert("Your opponent has left the game!, Win by default!", "WARN");
+                setIsLoading(true);
+                Allow = true;
+                navigate('/home', {
+                  state: { username: User.username, user_id: User.user_id }
+                });
+              } else {
+                console.log("Update game status error:");
+              }
+            })
+            .catch((ex) => {
+              console.log("Ex 299 : ", ex);
+            });
+        }
       }
     }
   }, [User.socketResponse]);
@@ -422,6 +425,7 @@ export default function Game() {
             setMove(User.user_id);
             console.log("At final arr : ", arr);
             setBoard(arr);
+            setSelectedTile(-1);
             setTimeout(() => {
               setIsLoading(false);
               Allow = false;
@@ -523,8 +527,8 @@ export default function Game() {
                 {item === detail.player_one
                   ? parse(detail.icon_one)
                   : item === detail.player_two
-                  ? parse(detail.icon_two)
-                  : null}
+                    ? parse(detail.icon_two)
+                    : null}
               </li>
             );
           })}

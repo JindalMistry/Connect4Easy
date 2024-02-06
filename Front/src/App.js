@@ -22,36 +22,42 @@ function App() {
   const User = useSelector(UserInfo);
   const dispatch = useDispatch();
 
-  const logoutProcess = () => {
-    logout(User.username)
-      .then((d) => {
-        let res =d.data;
-        if(res.Status === 200) {
-          toastAlert(res.Message, "SUCCESS");
-          dispatch(resetAuthSlice());
-          dispatch(resetConnectSlice());
-        }
-       })
-      .catch((ex) => {
-        let res = ex.response;
-        if (res && res.status === 403) {
-          toastAlert("You are not authorized user!", "ERROR");
-        } else if (res && res.status === 500) {
-          toastAlert(res.data.message, "ERROR");
-        }
-      });
-  };
-  useEffect(() => {
-    const handleUnload = () => {
-      if (User.username !== "") {
-        logoutProcess();
-      }
-    };
-    window.addEventListener("beforeunload", handleUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleUnload);
-    };
-  }, []);
+  // const logoutProcess = () => {
+  //   logout(User.username)
+  //     .then((d) => {
+  //       let res = d.data;
+  //       if (res.Status === 200) {
+  //         toastAlert(res.Message, "SUCCESS");
+  //         dispatch(resetAuthSlice());
+  //         dispatch(resetConnectSlice());
+  //       }
+  //     })
+  //     .catch((ex) => {
+  //       let res = ex.response;
+  //       if (res && res.status === 403) {
+  //         toastAlert("You are not authorized user!", "ERROR");
+  //       } else if (res && res.status === 500) {
+  //         toastAlert(res.data.message, "ERROR");
+  //       }
+  //     });
+  // };
+  // useEffect(() => {
+  //   const handleUnload = (event) => {
+  //     axios.get("http://192.168.100.43:8080/auth/test")
+  //       .then(d => {
+
+  //       });
+  //     if (User.username !== "") {
+  //       logoutProcess();
+  //     }
+  //     event.preventDefault();
+  //     event.returnValue = '';
+  //   };
+  //   window.addEventListener("beforeunload", handleUnload);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleUnload);
+  //   };
+  // }, []);
   return (
     <div className="App">
       <Login />

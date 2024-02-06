@@ -38,7 +38,6 @@ public class UserController {
     public ResponseEntity<ResponseModel> login(@RequestBody UserDto userDto){
         ResponseModel response = userService.login(userDto);
         List<Connections> connectionsList =  connectionService.getOnlineFriends(userDto.getUsername());
-
         connectionsList.forEach(user -> {
             messagingTemplate.convertAndSendToUser(
                     user.getRefname(),
@@ -63,9 +62,5 @@ public class UserController {
                 ""
         ));
         return ResponseEntity.ok(res);
-    }
-    @GetMapping("/test")
-    public void Test(){
-        log.info("Test successfully.");
     }
 }

@@ -67,8 +67,8 @@ export default function Login() {
               axios.interceptors.request.use(function (config) {
                 const token = response.Data.token;
                 // config.baseURL = 'http://localhost:8080/';
-                // config.baseURL = 'http://192.168.100.43:8080/';
-                config.baseURL = "http://192.168.1.7:8080/";
+                config.baseURL = 'http://192.168.100.43:8080/';
+                // config.baseURL = "http://192.168.1.7:8080/";
                 config.headers.Authorization = `Bearer ${token}`;
                 return config;
               });
@@ -97,7 +97,7 @@ export default function Login() {
           if (res.Status === 200) {
             toastAlert(
               "One time password has been sent to registered email and is only valid for 5 minutes."
-              ,"SUCCESS"
+              , "SUCCESS"
             );
             navigate("/otp");
           }

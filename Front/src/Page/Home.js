@@ -31,10 +31,10 @@ import { toastAlert } from "../Component/ToasteMessage";
 
 // const SOCKET_URL = "ws://localhost:8080/ws";
 // const SOCKJS_URL = "http://localhost:8080/ws";
-// const SOCKET_URL = "ws://192.168.100.43:8080/ws";
-// const SOCKJS_URL = "http://192.168.100.43:8080/ws";
-const SOCKET_URL = "ws://192.168.1.7:8080/ws";
-const SOCKJS_URL = "http://192.168.1.7:8080/ws";
+const SOCKET_URL = "ws://192.168.100.43:8080/ws";
+const SOCKJS_URL = "http://192.168.100.43:8080/ws";
+// const SOCKET_URL = "ws://192.168.1.7:8080/ws";
+// const SOCKJS_URL = "http://192.168.1.7:8080/ws";
 let stompClient = null;
 
 export default function Home(props) {
@@ -92,13 +92,7 @@ export default function Home(props) {
             },
             { sessionId: location.state.username }
           );
-          // stompClient.subscribe(
-          //   "/topic/public",
-          //   (e) => {
-
-          //   },
-          // );
-          // stompClient.publish('/app/chat.subUser', {}, JSON.stringify({user_id : location.state.user_id, username : location.state.username}));
+          // stompClient.publish('/app/testsocket', {}, JSON.stringify({ user_id: location.state.user_id, username: location.state.username }));
         }
       };
       stompClient.onDisconnect = () => {
@@ -157,9 +151,6 @@ export default function Home(props) {
         toastAlert('Your opponent has declined the game request!', "ERROR");
         setShowConnectionModalPopup(false);
         loadNotifications();
-      }
-      if(res.type === "OFFLINE") {
-        setRefConnList(true);
       }
     }
   }, [User.socketResponse]);
@@ -233,8 +224,8 @@ export default function Home(props) {
   const logoutProcess = () => {
     logout(User.username)
       .then((d) => {
-        let res =d.data;
-        if(res.Status === 200) {
+        let res = d.data;
+        if (res.Status === 200) {
           toastAlert(res.Message, "SUCCESS");
           dispatch(resetAuthSlice());
           dispatch(resetConnectSlice());
@@ -242,7 +233,7 @@ export default function Home(props) {
             navigate("/");
           }, 50);
         }
-       })
+      })
       .catch((ex) => {
         let res = ex.response;
         if (res && res.status === 403) {
@@ -421,7 +412,7 @@ export default function Home(props) {
       {showAddConnPopup ? (
         <AddConnection
           onClose={() => setShowAddConnPopup(false)}
-          onRefresh = {loadNotifications}
+          onRefresh={loadNotifications}
           show={showAddConnPopup}
         />
       ) : null}
